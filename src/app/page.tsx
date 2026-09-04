@@ -12,32 +12,32 @@ const rideCategories = [
   {
     name: "City",
     description: "Smooth rides through the urban jungle",
-    image: "https://cdn.pixabay.com/photo/2016/11/22/21/42/bicycle-1846510_1280.jpg",
+    image: "https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     name: "Commuter",
     description: "Daily rides, built for reliability",
-    image: "https://cdn.pixabay.com/photo/2016/04/18/13/53/bike-1337734_1280.jpg",
+    image: "https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     name: "Mountain",
     description: "Conquer trails and hills with power",
-    image: "https://cdn.pixabay.com/photo/2016/07/22/16/29/fog-1535201_1280.jpg",
+    image: "https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     name: "Hybrid",
     description: "Best of both worlds — road and trail",
-    image: "https://cdn.pixabay.com/photo/2017/06/20/22/14/bicycle-2421763_1280.jpg",
+    image: "https://images.pexels.com/photos/9138689/pexels-photo-9138689.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     name: "Folding",
     description: "Compact, portable, city-ready",
-    image: "https://cdn.pixabay.com/photo/2014/07/23/06/58/bicycle-398889_1280.jpg",
+    image: "https://images.pexels.com/photos/16435192/pexels-photo-16435192.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
   {
     name: "Cargo",
     description: "Haul anything — groceries, gear, kids",
-    image: "https://cdn.pixabay.com/photo/2016/11/18/17/20/bicycle-1834929_1280.jpg",
+    image: "https://images.pexels.com/photos/31638909/pexels-photo-31638909.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
 ];
 
@@ -311,14 +311,14 @@ export default function HomePage() {
             </ScrollReveal>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                "https://cdn.pixabay.com/photo/2016/11/22/21/42/bicycle-1846510_1280.jpg",
-                "https://cdn.pixabay.com/photo/2017/06/20/22/14/bicycle-2421763_1280.jpg",
-                "https://cdn.pixabay.com/photo/2016/04/18/13/53/bike-1337734_1280.jpg",
-                "https://cdn.pixabay.com/photo/2016/07/22/16/29/fog-1535201_1280.jpg",
-                "https://cdn.pixabay.com/photo/2014/07/23/06/58/bicycle-398889_1280.jpg",
-                "https://cdn.pixabay.com/photo/2016/11/18/17/20/bicycle-1834929_1280.jpg",
-                "https://cdn.pixabay.com/photo/2013/04/11/19/46/bicycle-102841_1280.jpg",
-                "https://cdn.pixabay.com/photo/2017/08/06/15/13/woman-2593366_1280.jpg",
+                "https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=800",
+                "https://images.pexels.com/photos/9138689/pexels-photo-9138689.jpeg?auto=compress&cs=tinysrgb&w=800",
+                "https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=800",
+                "https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=800",
+                "https://images.pexels.com/photos/16435192/pexels-photo-16435192.jpeg?auto=compress&cs=tinysrgb&w=800",
+                "https://images.pexels.com/photos/31638909/pexels-photo-31638909.jpeg?auto=compress&cs=tinysrgb&w=800",
+                "https://images.pexels.com/photos/6900869/pexels-photo-6900869.jpeg?auto=compress&cs=tinysrgb&w=800",
+                "https://images.pexels.com/photos/34259660/pexels-photo-34259660.jpeg?auto=compress&cs=tinysrgb&w=800",
               ].map((img, i) => (
                 <ScrollReveal key={i} delay={i * 60} direction="scale">
                   <div className="aspect-square overflow-hidden rounded-card">
@@ -419,7 +419,7 @@ export default function HomePage() {
                   slug: "vybe-metro-01",
                   stars: 5,
                   text: "Bought this for my daily commute. Bike was exactly as described, great condition. The team was super helpful throughout.",
-                  image: "https://cdn.pixabay.com/photo/2016/11/22/21/42/bicycle-1846510_1280.jpg",
+                  image: "https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=400",
                 },
                 {
                   name: "Priya M.",
@@ -427,7 +427,7 @@ export default function HomePage() {
                   slug: "vybe-trail-01",
                   stars: 5,
                   text: "Took this out on the trails the same day I picked it up. Battery lasts longer than expected. Incredibly smooth ride.",
-                  image: "https://cdn.pixabay.com/photo/2016/07/22/16/29/fog-1535201_1280.jpg",
+                  image: "https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=400",
                 },
                 {
                   name: "Amit K.",
@@ -435,7 +435,7 @@ export default function HomePage() {
                   slug: "vybe-carry-01",
                   stars: 5,
                   text: "Cargo bike for the family. Carries everything we need. Saved a fortune compared to buying new. Highly recommend VYBE.",
-                  image: "https://cdn.pixabay.com/photo/2016/11/18/17/20/bicycle-1834929_1280.jpg",
+                  image: "https://images.pexels.com/photos/31638909/pexels-photo-31638909.jpeg?auto=compress&cs=tinysrgb&w=400",
                 },
               ].map((review, i) => (
                 <ScrollReveal key={review.name} delay={i * 100}>
