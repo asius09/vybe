@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -18,15 +19,19 @@ export function CompareClient({ allBikes }: { allBikes: VYBEbike[] }) {
 
   if (compareBikes.length < 2) {
     return (
-      <div className="mx-auto max-w-6xl px-5 py-20 text-center">
-        <h2 className="font-heading text-2xl font-bold">Select at least 2 bikes to compare</h2>
-        <p className="mt-2 text-muted-foreground">Go back and select bikes from the browse page.</p>
-        <Button className="mt-6" asChild>
-          <Link href="/bikes">
-            <ArrowLeft className="h-4 w-4" />
-            Browse Bikes
-          </Link>
-        </Button>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="mx-auto max-w-6xl px-5 py-20 text-center">
+          <h2 className="font-heading text-2xl font-bold">Select at least 2 bikes to compare</h2>
+          <p className="mt-2 text-muted-foreground">Go back and select bikes from the browse page.</p>
+          <Button className="mt-6" asChild>
+            <Link href="/bikes">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Browse Bikes
+            </Link>
+          </Button>
+        </main>
+        <Footer />
       </div>
     );
   }
@@ -50,58 +55,68 @@ export function CompareClient({ allBikes }: { allBikes: VYBEbike[] }) {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10">
-      <div className="mb-8">
-        <Link href="/bikes" className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors mb-4">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Bikes
-        </Link>
-        <h1 className="font-heading text-3xl font-bold text-foreground">Compare Bikes</h1>
-        <p className="mt-2 text-muted-foreground">{compareBikes.length} bikes selected</p>
-      </div>
-
-      <div className="overflow-x-auto -mx-5 px-5 pb-4">
-        <div className="min-w-[600px]">
-        <table className="w-full text-left">
-          <thead>
-            <tr>
-              <th className="w-48 pb-4"></th>
-              {compareBikes.map((bike) => (
-                <th key={bike.slug} className="pb-4 px-4">
-                  <Link href={`/bikes/${bike.slug}`} className="group block">
-                    <div className="overflow-hidden rounded-card border border-border">
-                      <div className="aspect-[4/3] overflow-hidden bg-muted/40">
-                        <img src={bike.image} alt={bike.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      </div>
-                      <div className="p-3">
-                        <p className="text-[10px] text-muted-foreground">{bike.category}</p>
-                        <p className="font-heading text-sm font-bold">{bike.name}</p>
-                        <p className="font-heading text-base font-extrabold mt-1">{formatPriceINR(bike.price)}</p>
-                      </div>
-                    </div>
-                  </Link>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {specs.map((spec, i) => (
-              <tr key={spec.label} className={i % 2 === 0 ? "bg-muted/20" : ""}>
-                <td className="py-3 pr-4 text-sm font-semibold text-muted-foreground">{spec.label}</td>
-                {compareBikes.map((bike) => (
-                  <td key={bike.slug} className="py-3 px-4 text-sm font-medium text-foreground">
-                    {spec.format(bike)}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="mx-auto max-w-6xl px-5 py-10">
+        <div className="mb-8">
+          <Link href="/bikes" className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors mb-4">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Bikes
+          </Link>
+          <h1 className="font-heading text-3xl font-bold text-foreground">Compare Bikes</h1>
+          <p className="mt-2 text-muted-foreground">{compareBikes.length} bikes selected</p>
         </div>
-      </div>
 
-      {/* Mobile scroll hint */}
-      <p className="mt-4 text-center text-xs text-muted-foreground md:hidden">← Scroll to see all specs →</p>
+        <div className="overflow-x-auto -mx-5 px-5 pb-4">
+          <div className="min-w-[600px]">
+            <table className="w-full text-left">
+              <thead>
+                <tr>
+                  <th className="w-48 pb-4"></th>
+                  {compareBikes.map((bike) => (
+                    <th key={bike.slug} className="pb-4 px-4">
+                      <Link href={`/bikes/${bike.slug}`} className="group block">
+                        <div className="overflow-hidden rounded-card border border-border">
+                          <div className="relative aspect-[4/3] overflow-hidden bg-muted/40">
+                            <Image
+                              src={bike.image}
+                              alt={bike.name}
+                              fill
+                              sizes="33vw"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          </div>
+                          <div className="p-3">
+                            <p className="text-[10px] text-muted-foreground">{bike.category}</p>
+                            <p className="font-heading text-sm font-bold">{bike.name}</p>
+                            <p className="font-heading text-base font-extrabold mt-1">{formatPriceINR(bike.price)}</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {specs.map((spec, i) => (
+                  <tr key={spec.label} className={i % 2 === 0 ? "bg-muted/20" : ""}>
+                    <td className="py-3 pr-4 text-sm font-semibold text-muted-foreground">{spec.label}</td>
+                    {compareBikes.map((bike) => (
+                      <td key={bike.slug} className="py-3 px-4 text-sm font-medium text-foreground">
+                        {spec.format(bike)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Mobile scroll hint */}
+        <p className="mt-4 text-center text-xs text-muted-foreground md:hidden">← Scroll to see all specs →</p>
+      </main>
+      <Footer />
     </div>
   );
 }
