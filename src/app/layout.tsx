@@ -30,9 +30,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${syne.variable} ${inter.variable}`}>
+    <html lang="en" className={`${syne.variable} ${inter.variable} overscroll-none`}>
       <body className="min-h-screen bg-background font-body antialiased">
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-card focus:bg-lime focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-asphalt focus:outline-none">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-100 focus:rounded-card focus:bg-lime focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-asphalt focus:outline-none">
           Skip to content
         </a>
         {children}
