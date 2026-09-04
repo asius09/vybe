@@ -1,5 +1,7 @@
 // CMS Content Configuration
-// Admin can edit these values via the admin panel or directly
+// Uses Vercel KV for persistence, falls back to in-memory for local dev
+
+import { kv } from "@vercel/kv";
 
 export interface CMSContent {
   announcement: {
@@ -59,19 +61,50 @@ const defaultContent: CMSContent = {
   },
 };
 
-// In-memory store (resets on server restart)
-let contentStore: CMSContent = { ...defaultContent };
+const KV_KEY = "vybe:cms";
 
-export function getCMSContent(): CMSContent {
-  return contentStore;
+// In-memory fallback for local dev (when KV isn't configured)
+let memStore: CMSContent | null = null;
+
+async function hasKV(): Promise<boolean> {
+  try {
+    await kv.get(KV_KEY);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-export function updateCMSContent(updates: Partial<CMSContent>): CMSContent {
-  contentStore = { ...contentStore, ...updates };
-  return contentStore;
+export async function getCMSContent(): Promise<CMSContent> {
+  // Try KV first
+  try {
+    const data = await kv.get<CMSContent>(KV_KEY);
+    if (data) return data;
+  } catch {}
+
+  // Fallback to in-memory
+  if (memStore) return memStore;
+  return defaultContent;
 }
 
-export function resetCMSContent(): CMSContent {
-  contentStore = { ...defaultContent };
-  return contentStore;
+export async function updateCMSContent(updates: Partial<CMSContent>): Promise<CMSContent> {
+  const current = await getCMSContent();
+  const merged = { ...current, ...updates };
+
+  // Try KV
+  try {
+    await kv.set(KV_KEY, merged);
+  } catch {}
+
+  // Always update in-memory fallback
+  memStore = merged;
+  return merged;
+}
+
+export async function resetCMSContent(): Promise<CMSContent> {
+  try {
+    await kv.set(KV_KEY, defaultContent);
+  } catch {}
+  memStore = defaultContent;
+  return defaultContent;
 }
