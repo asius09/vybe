@@ -118,7 +118,7 @@ export function Footer() {
             WebkitMaskImage: "radial-gradient(circle var(--spotlight-radius) at var(--mx) var(--my), black 0%, transparent 100%)",
           }}
         >
-          <h2 className="font-heading text-[clamp(80px,22vw,550px)] font-extrabold leading-none text-warm-white tracking-tighter text-center m-0 p-0 select-none" style={{ marginBottom: "-18em" }}>
+          <h2 className="font-heading text-[clamp(80px,22vw,550px)] font-extrabold leading-none text-warm-white tracking-tighter text-center m-0 p-0 select-none" style={{ marginBottom: "-0.18em" }}>
             VYBE
           </h2>
         </div>
