@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -27,8 +27,15 @@ export function Header() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const location = useLocation();
+
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setMobileOpen(false);
+    setMegaOpen(false);
+  }
 
   const openMega = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -38,11 +45,6 @@ export function Header() {
   const closeMega = useCallback(() => {
     timeoutRef.current = setTimeout(() => setMegaOpen(false), 150);
   }, []);
-
-  useEffect(() => {
-    setMobileOpen(false);
-    setMegaOpen(false);
-  }, [pathname]);
 
   const locationText = location.city || location.country || "Your area";
 
