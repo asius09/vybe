@@ -433,7 +433,7 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
             </div>
 
             {/* Step Content */}
-            <div className="px-6 py-6 min-h-[320px]">
+            <div className="px-6 py-6 min-h-80">
               {/* Step 0: Basic Info */}
               {currentStep === 0 && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -452,7 +452,7 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
                     </Field>
                   </div>
                   <Field label="Description">
-                    <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm min-h-[60px]" placeholder="Brief description of the bike..." />
+                    <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm min-h-15" placeholder="Brief description of the bike..." />
                   </Field>
                   <div className="grid grid-cols-2 gap-3">
                     <Field label="Selling Price (₹) *">
@@ -556,7 +556,7 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
                   </Field>
                   {form.image && (
                     <div className="rounded-lg border border-border overflow-hidden bg-muted/20">
-                      <img src={form.image} alt="Preview" className="w-full h-48 object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                      <Image src={form.image} alt="Preview" className="w-full h-48 object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                     </div>
                   )}
                   <div className="rounded-lg bg-muted/30 p-4">
@@ -603,7 +603,7 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
           <div className="w-full max-w-sm rounded-card border border-border bg-white p-6">
             <h2 className="font-heading text-lg font-bold text-foreground">Remove this bike?</h2>
             <div className="mt-3 flex items-center gap-3">
-              {deleteBike.image && <div className="h-12 w-12 shrink-0 overflow-hidden rounded bg-muted/40"><img src={deleteBike.image} alt="" className="h-full w-full object-cover" /></div>}
+              {deleteBike.image && <div className="h-12 w-12 shrink-0 overflow-hidden rounded bg-muted/40"><Image src={deleteBike.image} alt="" className="h-full w-full object-cover" /></div>}
               <div>
                 <p className="font-semibold text-foreground">{deleteBike.name}</p>
                 <p className="text-sm text-muted-foreground">{formatPriceINR(deleteBike.price)}</p>

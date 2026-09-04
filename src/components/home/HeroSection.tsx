@@ -159,35 +159,20 @@ export function HeroSection() {
           );
         })}
 
-        {/* ─── Authentic Minimal Retail Hangtag ─── */}
+        {/* ─── Minimal Price Badge ─── */}
         <div className="absolute top-[18%] sm:top-[20%] md:top-[22%] right-5 sm:right-10 md:right-16 lg:right-20 z-20">
           <Link
             href={`/bikes/${activeSlide.slug}`}
-            className="group flex flex-col items-center cursor-pointer"
+            className="inline-flex items-baseline gap-2 rounded-full bg-warm-white/90 backdrop-blur-md px-3.5 py-1 text-asphalt shadow-vybe-sm border border-neutral-300/80 transition-all duration-200 hover:bg-warm-white hover:border-neutral-400"
           >
-            {/* Tag String / Eyelet */}
-            <div className="w-[1.5px] h-3 bg-white/40 mb-0.5" />
-            <div className="flex items-center gap-2.5 rounded-md bg-[#FBF9F4]/95 text-asphalt px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.18)] border border-neutral-300/80 backdrop-blur-sm transition-all duration-200 hover:border-neutral-400">
-              {/* Eyelet Hole */}
-              <div className="flex items-center justify-center w-2 h-2 rounded-full border border-neutral-400/90 bg-neutral-300/60 shadow-inner shrink-0" />
-              
-              {/* Tag Details */}
-              <div className="flex flex-col leading-tight">
-                <span className="text-[7.5px] font-heading font-extrabold uppercase tracking-widest text-muted-foreground">
-                  PRICE
-                </span>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="font-heading text-sm sm:text-base font-extrabold text-foreground tracking-tight">
-                    {activeSlide.price}
-                  </span>
-                  {activeSlide.originalPrice && (
-                    <span className="text-[10px] text-muted-foreground line-through font-medium">
-                      {activeSlide.originalPrice}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
+            <span className="font-heading text-xs sm:text-sm font-black tracking-tight text-foreground">
+              {activeSlide.price}
+            </span>
+            {activeSlide.originalPrice && (
+              <span className="text-[10px] sm:text-[11px] text-muted-foreground line-through font-medium">
+                {activeSlide.originalPrice}
+              </span>
+            )}
           </Link>
         </div>
 

@@ -67,7 +67,7 @@ export function Header() {
       </div>
 
       {/* Main Nav */}
-      <div className="border-b border-border/40 bg-warm-white/70 backdrop-blur-2xl backdrop-saturate-200 shadow-[0_4px_24px_rgba(0,0,0,0.03)] supports-[backdrop-filter]:bg-warm-white/60">
+      <div className="border-b border-border/40 bg-warm-white/70 backdrop-blur-2xl backdrop-saturate-200 shadow-[0_4px_24px_rgba(0,0,0,0.03)] supports-backdrop-filter:bg-warm-white/60">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
           {/* Logo */}
           <Link href="/" className="flex items-baseline gap-1 group">
@@ -128,10 +128,7 @@ export function Header() {
                   : "text-foreground hover:bg-foreground hover:text-warm-white hover:border-foreground"
               )}
             >
-              <div className="flex h-4 w-4 items-center justify-center rounded-full bg-foreground/10">
-                <User className="h-2.5 w-2.5" />
-              </div>
-              <span>Login</span>
+              Login
             </Link>
             <button className="flex h-8 w-8 items-center justify-center rounded-full border border-border/60 bg-background/50 text-muted-foreground hover:text-foreground hover:border-border hover:bg-foreground/5 transition-all" aria-label="Shopping cart">
               <ShoppingCart className="h-3.5 w-3.5" />
