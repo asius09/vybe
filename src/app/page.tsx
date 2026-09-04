@@ -3,41 +3,95 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { BikeCard } from "@/components/bikes/BikeCard";
-import { ServiceCard } from "@/components/services/ServiceCard";
-import { getFeaturedBikes } from "@/data/bikes";
-import { services } from "@/data/services";
-import {
-  ArrowRight,
-  Zap,
-  Shield,
-  Wrench,
-  Heart,
-  Bike as BikeIcon,
-  CheckCircle,
-  Compass,
-  Mountain,
-  Package,
-  Home,
-  Navigation,
-  Star,
-  ClipboardCheck,
-  ShieldCheck,
-} from "lucide-react";
-import { rideIntentLabels, type RideIntent } from "@/data/bikes";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import { getFeaturedBikes, getNewArrivals, getCategories, formatPriceINR } from "@/data/loader";
+import type { VYBEbike } from "@/data/loader";
+import Image from "next/image";
 
-const rideIntents: { id: RideIntent; icon: React.ComponentType<{ className?: string; strokeWidth?: number }> }[] = [
-  { id: "commute", icon: BikeIcon },
-  { id: "weekend", icon: Compass },
-  { id: "hills", icon: Mountain },
-  { id: "cargo", icon: Package },
-  { id: "small-space", icon: Home },
-  { id: "getting-around", icon: Navigation },
+const rideCategories = [
+  {
+    name: "City",
+    description: "Smooth rides through the urban jungle",
+    image: "https://cdn.pixabay.com/photo/2016/11/22/21/42/bicycle-1846510_1280.jpg",
+  },
+  {
+    name: "Commuter",
+    description: "Daily rides, built for reliability",
+    image: "https://cdn.pixabay.com/photo/2016/04/18/13/53/bike-1337734_1280.jpg",
+  },
+  {
+    name: "Mountain",
+    description: "Conquer trails and hills with power",
+    image: "https://cdn.pixabay.com/photo/2016/07/22/16/29/fog-1535201_1280.jpg",
+  },
+  {
+    name: "Hybrid",
+    description: "Best of both worlds — road and trail",
+    image: "https://cdn.pixabay.com/photo/2017/06/20/22/14/bicycle-2421763_1280.jpg",
+  },
+  {
+    name: "Folding",
+    description: "Compact, portable, city-ready",
+    image: "https://cdn.pixabay.com/photo/2014/07/23/06/58/bicycle-398889_1280.jpg",
+  },
+  {
+    name: "Cargo",
+    description: "Haul anything — groceries, gear, kids",
+    image: "https://cdn.pixabay.com/photo/2016/11/18/17/20/bicycle-1834929_1280.jpg",
+  },
 ];
 
+const brands = [
+  "VYBE", "Rad Power", "Trek", "Giant", "Specialized", "Cannondale", "Brompton", "Tern",
+];
+
+function BikeCardGrid({ bike }: { bike: VYBEbike }) {
+  return (
+    <Link href={`/bikes/${bike.slug}`} className="group block">
+      <div className="overflow-hidden rounded-card border border-border bg-white transition-all duration-300 group-hover:shadow-vybe-md">
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted/30">
+          <img
+            src={bike.image}
+            alt={bike.name}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          {bike.recentlyArrived && (
+            <div className="absolute left-3 top-3">
+              <span className="rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold text-asphalt">New</span>
+            </div>
+          )}
+        </div>
+        <div className="p-4">
+          <p className="text-[11px] text-muted-foreground">{bike.category}</p>
+          <h3 className="font-heading text-base font-bold text-foreground">{bike.name}</h3>
+          <div className="mt-2 flex items-center gap-3 text-[11px] text-muted-foreground">
+            <span>{bike.year}</span>
+            <span>·</span>
+            <span>{bike.mileage.toLocaleString()} km</span>
+            <span>·</span>
+            <span>{bike.batteryHealthPercent}% battery</span>
+          </div>
+          <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+            <div>
+              <p className="font-heading text-lg font-extrabold">{formatPriceINR(bike.price)}</p>
+              <p className="text-[10px] text-muted-foreground line-through">{formatPriceINR(bike.originalPrice)}</p>
+            </div>
+            <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">
+              {bike.condition}
+            </span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default function HomePage() {
-  const featuredBikes = getFeaturedBikes().slice(0, 6);
-  const featuredServices = services.filter((s) => s.popular).slice(0, 3);
+  const featured = getFeaturedBikes();
+  const newArrivals = getNewArrivals();
+  const displayBikes = [...newArrivals.filter((b) => !featured.find((f) => f.id === b.id)), ...featured];
+  const row1 = displayBikes.slice(0, 3);
+  const row2 = displayBikes.slice(3, 6);
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,333 +99,394 @@ export default function HomePage() {
 
       <main>
         {/* ═══════════════════════════════════════════════════════════
-            1. HERO — "Find your next ride."
+            1. HERO
         ═══════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-asphalt px-5 py-20 md:py-32">
+        <section className="relative overflow-hidden bg-asphalt px-5 py-24 md:py-36">
           <div className="mx-auto max-w-6xl">
-            <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center">
-              <div className="max-w-2xl space-y-6">
-                <Badge className="w-fit bg-lime text-asphalt">
-                  <Zap className="h-3 w-3" />
-                  Used e-bikes, inspected and certified
-                </Badge>
-                <h1 className="font-heading text-5xl font-extrabold leading-[1.05] tracking-tight text-lime md:text-7xl">
-                  FIND YOUR
-                  <br />
-                  NEXT RIDE.
-                </h1>
-                <p className="max-w-lg text-lg text-warm-white/70">
-                  Quality used e-bikes at fair prices. Every bike inspected,
-                  tested, and certified by our team.
-                </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Button size="lg" asChild className="bg-lime text-asphalt hover:bg-lime-dark">
-                    <Link href="/bikes">
-                      Browse Bikes
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
-                    <Link href="/sell">
-                      Sell Your Bike
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Hero Visual */}
-              <div className="relative mx-auto flex w-full max-w-sm flex-col items-center lg:mx-0">
-                <div className="flex h-64 w-64 items-center justify-center rounded-[40px] bg-lime/10 md:h-80 md:w-80">
-                  <BikeIcon className="h-40 w-40 text-lime/30 md:h-52 md:w-52" strokeWidth={0.5} />
-                </div>
-                <div className="absolute -bottom-4 -right-4 rounded-card bg-white p-4 shadow-vybe-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-lime">
-                      <CheckCircle className="h-5 w-5 text-asphalt" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">32-Point</p>
-                      <p className="font-heading text-sm font-bold">Inspected</p>
-                    </div>
-                  </div>
-                </div>
+            <div className="max-w-2xl space-y-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-warm-white/40">Curated used e-bikes</p>
+              <h1 className="font-heading text-5xl font-extrabold leading-[1.05] tracking-tight text-warm-white md:text-7xl">
+                Find your
+                <br />
+                next ride.
+              </h1>
+              <p className="max-w-md text-base text-warm-white/60">
+                Inspected, serviced, and ready to ride. Every VYBE bike passes 32 checks before it reaches you.
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row pt-2">
+                <Button size="lg" asChild>
+                  <Link href="/bikes">
+                    Browse Collection
+                    <span className="ml-1">→</span>
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
+                  <Link href="/sell">Sell Your Bike</Link>
+                </Button>
               </div>
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            2. MARQUEE — Brand energy strip
-        ═══════════════════════════════════════════════════════════ */}
-        <section className="border-y border-border bg-muted/30 py-4 overflow-hidden">
-          <div className="flex animate-[marquee_20s_linear_infinite] whitespace-nowrap gap-8">
-            {["City Bikes", "Folding", "Cargo", "Mountain", "Hybrid", "Commuter", "City Bikes", "Folding", "Cargo", "Mountain", "Hybrid", "Commuter"].map((type, i) => (
-              <span key={i} className="flex items-center gap-3 text-sm font-heading font-bold text-muted-foreground/60">
-                <span className="h-1.5 w-1.5 rounded-full bg-lime" />
-                {type}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════════════
-            3. WHAT ARE YOU RIDING FOR? — Intent discovery
+            2. WHAT ARE YOU RIDING FOR? — Story flow with bike images
         ═══════════════════════════════════════════════════════════ */}
         <section className="px-5 py-20">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <div className="text-center">
-              <Badge variant="coral" className="mb-3">Discover</Badge>
+          <div className="mx-auto max-w-6xl">
+            <ScrollReveal>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Discover</p>
               <h2 className="font-heading text-3xl font-bold text-foreground">
                 What are you riding for?
               </h2>
-              <p className="mt-2 text-muted-foreground">
-                Tell us how you ride, we&apos;ll find the right bike.
+              <p className="mt-2 text-muted-foreground max-w-md">
+                Every rider is different. Find the bike that fits your life.
               </p>
-            </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
-              {rideIntents.map((intent) => {
-                const Icon = intent.icon;
-                return (
-                  <Link
-                    key={intent.id}
-                    href={`/bikes?intent=${intent.id}`}
-                    className="group flex flex-col items-center gap-3 rounded-card border-2 border-border bg-white p-5 transition-all duration-200 hover:border-lime/40 hover:shadow-vybe-sm"
-                  >
-                    <Icon className="h-7 w-7 text-muted-foreground transition-colors group-hover:text-lime-deeper" strokeWidth={1.5} />
-                    <span className="text-xs font-semibold text-center text-muted-foreground group-hover:text-foreground">
-                      {rideIntentLabels[intent.id]}
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+            </ScrollReveal>
 
-        {/* ═══════════════════════════════════════════════════════════
-            4. FRESHLY INSPECTED BIKES — Featured inventory
-        ═══════════════════════════════════════════════════════════ */}
-        <section className="bg-muted/30 px-5 py-20">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <div className="flex items-end justify-between">
-              <div>
-                <Badge variant="lime" className="mb-3">Inventory</Badge>
-                <h2 className="font-heading text-3xl font-bold text-foreground">
-                  Freshly Inspected Bikes
-                </h2>
-                <p className="mt-2 text-muted-foreground">
-                  Every bike passes 32 checks before it hits the floor.
-                </p>
-              </div>
-              <Link href="/bikes">
-                <Button variant="outline" size="sm">
-                  View All
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Button>
-              </Link>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredBikes.map((bike) => (
-                <BikeCard key={bike.id} bike={bike} />
+            <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3">
+              {rideCategories.map((cat, i) => (
+                <ScrollReveal key={cat.name} delay={i * 80}>
+                  <Link
+                    href={`/bikes?category=${cat.name.toLowerCase()}`}
+                    className="group relative block aspect-[4/3] overflow-hidden rounded-card"
+                  >
+                    <img
+                      src={cat.image}
+                      alt={cat.name}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-asphalt/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-0 left-0 p-5">
+                      <h3 className="font-heading text-lg font-bold text-warm-white">{cat.name}</h3>
+                      <p className="text-xs text-warm-white/60">{cat.description}</p>
+                    </div>
+                  </Link>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            5. WHY BUY USED FROM VYBE? — Trust
+            3. BRANDS — Logo strip
         ═══════════════════════════════════════════════════════════ */}
-        <section className="px-5 py-20">
-          <div className="mx-auto max-w-6xl space-y-12">
-            <div className="text-center">
-              <Badge variant="purple" className="mb-3">Trust</Badge>
-              <h2 className="font-heading text-3xl font-bold text-foreground">
-                Why buy used from VYBE?
-              </h2>
-              <p className="mt-2 text-muted-foreground">
-                Buying used doesn&apos;t mean buying blind.
-              </p>
-            </div>
-            <div className="grid gap-5 md:grid-cols-3">
-              <div className="group rounded-card border-2 border-border bg-white p-6 transition-all duration-300 hover:border-lime/40 hover:shadow-vybe-md">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-lime/15 transition-colors group-hover:bg-lime/25">
-                  <ClipboardCheck className="h-6 w-6 text-lime-deeper" strokeWidth={1.5} />
-                </div>
-                <h3 className="font-heading text-lg font-bold text-foreground">
-                  32-Point Inspection
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Every bike goes through frame, battery, motor, brake, and electrical checks. 
-                  We don&apos;t sell anything we wouldn&apos;t ride ourselves.
-                </p>
-              </div>
-              <div className="group rounded-card border-2 border-border bg-white p-6 transition-all duration-300 hover:border-coral/40 hover:shadow-vybe-md">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-coral/10 transition-colors group-hover:bg-coral/20">
-                  <Wrench className="h-6 w-6 text-coral" strokeWidth={1.5} />
-                </div>
-                <h3 className="font-heading text-lg font-bold text-foreground">
-                  Serviced Before Sale
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  We repair and service every bike before it hits the floor. 
-                  Your first service is already included.
-                </p>
-              </div>
-              <div className="group rounded-card border-2 border-border bg-white p-6 transition-all duration-300 hover:border-purple/40 hover:shadow-vybe-md">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 transition-colors group-hover:bg-purple/20">
-                  <ShieldCheck className="h-6 w-6 text-purple" strokeWidth={1.5} />
-                </div>
-                <h3 className="font-heading text-lg font-bold text-foreground">
-                  30-Day Support
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  After purchase, we&apos;re here for 30 days. Free check-up, 
-                  adjustments, and peace of mind.
-                </p>
-              </div>
+        <section className="border-y border-border bg-muted/30 py-8">
+          <div className="mx-auto max-w-6xl px-5">
+            <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6">Brands we carry</p>
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+              {brands.map((brand) => (
+                <span key={brand} className="font-heading text-sm font-bold text-muted-foreground/50 hover:text-foreground transition-colors">
+                  {brand}
+                </span>
+              ))}
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            6. HOW VYBE CHECKS EVERY BIKE — Process
+            4. LATEST COLLECTION — Two-row grid
         ═══════════════════════════════════════════════════════════ */}
-        <section className="bg-asphalt px-5 py-20">
-          <div className="mx-auto max-w-6xl space-y-12">
-            <div className="text-center">
-              <Badge className="mb-3 bg-lime text-asphalt">Process</Badge>
-              <h2 className="font-heading text-3xl font-bold text-lime">
+        <section className="px-5 py-20">
+          <div className="mx-auto max-w-6xl">
+            <ScrollReveal>
+              <div className="flex items-end justify-between mb-8">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Collection</p>
+                  <h2 className="font-heading text-3xl font-bold text-foreground">
+                    Latest arrivals
+                  </h2>
+                </div>
+                <Link href="/bikes" className="text-sm font-semibold text-foreground hover:text-muted-foreground transition-colors">
+                  View all →
+                </Link>
+              </div>
+            </ScrollReveal>
+
+            {/* Row 1 */}
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-5">
+              {row1.map((bike, i) => (
+                <ScrollReveal key={bike.id} delay={i * 100}>
+                  <BikeCardGrid bike={bike} />
+                </ScrollReveal>
+              ))}
+            </div>
+
+            {/* Row 2 */}
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {row2.map((bike, i) => (
+                <ScrollReveal key={bike.id} delay={i * 100}>
+                  <BikeCardGrid bike={bike} />
+                </ScrollReveal>
+              ))}
+            </div>
+
+            <ScrollReveal>
+              <div className="mt-10 text-center">
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/bikes">
+                    Browse All Bikes
+                    <span className="ml-1">→</span>
+                  </Link>
+                </Button>
+              </div>
+            </ScrollReveal>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            5. WHY BUY USED FROM VYBE — Story flow with tree
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="bg-muted/30 px-5 py-24">
+          <div className="mx-auto max-w-4xl">
+            <ScrollReveal>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 text-center">Why VYBE</p>
+              <h2 className="font-heading text-3xl font-bold text-foreground text-center mb-16">
+                Why buy used from VYBE?
+              </h2>
+            </ScrollReveal>
+
+            {/* Story tree */}
+            <div className="relative">
+              {/* Vertical line */}
+              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2" />
+
+              {/* Point 1 — Left */}
+              <ScrollReveal direction="left" delay={0}>
+                <div className="relative flex items-center mb-16">
+                  <div className="w-1/2 pr-12 text-right">
+                    <p className="font-heading text-xs font-bold text-lime-deeper uppercase tracking-wider mb-1">01</p>
+                    <h3 className="font-heading text-xl font-bold text-foreground">32-Point Inspection</h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                      Every bike goes through frame, battery, motor, brake, and electrical checks. We document everything.
+                    </p>
+                  </div>
+                  <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-lime border-4 border-background z-10" />
+                  <div className="w-1/2" />
+                </div>
+              </ScrollReveal>
+
+              {/* Point 2 — Right */}
+              <ScrollReveal direction="right" delay={100}>
+                <div className="relative flex items-center mb-16">
+                  <div className="w-1/2" />
+                  <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-coral border-4 border-background z-10" />
+                  <div className="w-1/2 pl-12">
+                    <p className="font-heading text-xs font-bold text-coral uppercase tracking-wider mb-1">02</p>
+                    <h3 className="font-heading text-xl font-bold text-foreground">Serviced Before Sale</h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                      Worn parts replaced, full tune-up completed, battery calibrated. Ready to ride from day one.
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* Point 3 — Left */}
+              <ScrollReveal direction="left" delay={200}>
+                <div className="relative flex items-center">
+                  <div className="w-1/2 pr-12 text-right">
+                    <p className="font-heading text-xs font-bold text-purple uppercase tracking-wider mb-1">03</p>
+                    <h3 className="font-heading text-xl font-bold text-foreground">30-Day Support</h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                      After purchase, we&apos;re here for 30 days. Free check-up, adjustments, and peace of mind.
+                    </p>
+                  </div>
+                  <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-purple border-4 border-background z-10" />
+                  <div className="w-1/2" />
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            6. BENTO — Image collection
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="px-5 py-20">
+          <div className="mx-auto max-w-6xl">
+            <ScrollReveal>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Gallery</p>
+              <h2 className="font-heading text-3xl font-bold text-foreground mb-8">
+                VYBE in action
+              </h2>
+            </ScrollReveal>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                "https://cdn.pixabay.com/photo/2016/11/22/21/42/bicycle-1846510_1280.jpg",
+                "https://cdn.pixabay.com/photo/2017/06/20/22/14/bicycle-2421763_1280.jpg",
+                "https://cdn.pixabay.com/photo/2016/04/18/13/53/bike-1337734_1280.jpg",
+                "https://cdn.pixabay.com/photo/2016/07/22/16/29/fog-1535201_1280.jpg",
+                "https://cdn.pixabay.com/photo/2014/07/23/06/58/bicycle-398889_1280.jpg",
+                "https://cdn.pixabay.com/photo/2016/11/18/17/20/bicycle-1834929_1280.jpg",
+                "https://cdn.pixabay.com/photo/2013/04/11/19/46/bicycle-102841_1280.jpg",
+                "https://cdn.pixabay.com/photo/2017/08/06/15/13/woman-2593366_1280.jpg",
+              ].map((img, i) => (
+                <ScrollReveal key={i} delay={i * 60} direction="scale">
+                  <div className="aspect-square overflow-hidden rounded-card">
+                    <img src={img} alt="" className="h-full w-full object-cover hover:scale-105 transition-transform duration-700" />
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            7. HOW VYBE CHECKS EVERY BIKE — Impactful process
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="bg-asphalt px-5 py-24">
+          <div className="mx-auto max-w-6xl">
+            <ScrollReveal>
+              <p className="text-xs font-bold uppercase tracking-widest text-warm-white/40 mb-3 text-center">Process</p>
+              <h2 className="font-heading text-3xl font-bold text-warm-white text-center mb-16">
                 How VYBE checks every bike
               </h2>
-              <p className="mt-2 text-warm-white/60">
-                From intake to floor — our quality process.
-              </p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-4">
+            </ScrollReveal>
+            <div className="grid gap-8 md:grid-cols-4">
               {[
                 { step: "01", title: "Intake", desc: "Bike arrives. We log condition, mileage, and service history." },
                 { step: "02", title: "32-Point Check", desc: "Frame, battery, motor, brakes, tires, electrics — every system tested." },
                 { step: "03", title: "Service & Repair", desc: "Worn parts replaced. Full tune-up. Battery calibrated." },
                 { step: "04", title: "Listed & Ready", desc: "Photos taken. Listing live. Ready for test ride." },
-              ].map((item) => (
-                <div key={item.step} className="text-center">
-                  <p className="font-heading text-4xl font-extrabold text-lime/30">{item.step}</p>
-                  <h3 className="mt-2 font-heading text-lg font-bold text-lime">{item.title}</h3>
-                  <p className="mt-2 text-sm text-warm-white/60">{item.desc}</p>
-                </div>
+              ].map((item, i) => (
+                <ScrollReveal key={item.step} delay={i * 100}>
+                  <div className="text-center">
+                    <p className="font-heading text-5xl font-extrabold text-warm-white/10">{item.step}</p>
+                    <h3 className="mt-3 font-heading text-lg font-bold text-warm-white">{item.title}</h3>
+                    <p className="mt-2 text-sm text-warm-white/50 leading-relaxed">{item.desc}</p>
+                  </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            7. SERVICES & ONGOING CARE
+            8. ONGOING CARE — Full-width two-card
         ═══════════════════════════════════════════════════════════ */}
         <section className="px-5 py-20">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <div className="flex items-end justify-between">
-              <div>
-                <Badge variant="coral" className="mb-3">Services</Badge>
-                <h2 className="font-heading text-3xl font-bold text-foreground">
-                  Ongoing care
-                </h2>
-                <p className="mt-2 text-muted-foreground">
-                  VYBE supports you after the sale.
-                </p>
-              </div>
-              <Link href="/repairs">
-                <Button variant="outline" size="sm">
-                  All Services
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Button>
-              </Link>
+          <div className="mx-auto max-w-6xl">
+            <ScrollReveal>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">After the sale</p>
+              <h2 className="font-heading text-3xl font-bold text-foreground mb-8">
+                Ongoing care
+              </h2>
+            </ScrollReveal>
+            <div className="grid gap-5 md:grid-cols-2">
+              <ScrollReveal direction="left">
+                <div className="rounded-card border border-border bg-white p-8">
+                  <p className="font-heading text-xs font-bold text-lime-deeper uppercase tracking-wider mb-2">Included</p>
+                  <h3 className="font-heading text-xl font-bold text-foreground">Your first service is on us</h3>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                    Every VYBE bike comes with a free 30-day check-up. We&apos;ll make sure everything is running perfectly.
+                  </p>
+                  <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <Link href="/repairs">Learn more →</Link>
+                  </div>
+                </div>
+              </ScrollReveal>
+              <ScrollReveal direction="right">
+                <div className="rounded-card border border-border bg-white p-8">
+                  <p className="font-heading text-xs font-bold text-coral uppercase tracking-wider mb-2">Available</p>
+                  <h3 className="font-heading text-xl font-bold text-foreground">Keep it running</h3>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                    Battery checks, brake service, full tune-ups, diagnostics. Our in-house team handles it all.
+                  </p>
+                  <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <Link href="/repairs">View services →</Link>
+                  </div>
+                </div>
+              </ScrollReveal>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredServices.map((service) => (
-                <ServiceCard key={service.id} service={service} />
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            9. REVIEWS — Stacked card carousel
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="bg-muted/30 px-5 py-20">
+          <div className="mx-auto max-w-6xl">
+            <ScrollReveal>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 text-center">Reviews</p>
+              <h2 className="font-heading text-3xl font-bold text-foreground text-center mb-12">
+                Real riders, real reviews
+              </h2>
+            </ScrollReveal>
+            <div className="grid gap-5 md:grid-cols-3">
+              {[
+                {
+                  name: "Rahul S.",
+                  bike: "VYBE Metro 01",
+                  slug: "vybe-metro-01",
+                  stars: 5,
+                  text: "Bought this for my daily commute. Bike was exactly as described, great condition. The team was super helpful throughout.",
+                  image: "https://cdn.pixabay.com/photo/2016/11/22/21/42/bicycle-1846510_1280.jpg",
+                },
+                {
+                  name: "Priya M.",
+                  bike: "VYBE Trail 01",
+                  slug: "vybe-trail-01",
+                  stars: 5,
+                  text: "Took this out on the trails the same day I picked it up. Battery lasts longer than expected. Incredibly smooth ride.",
+                  image: "https://cdn.pixabay.com/photo/2016/07/22/16/29/fog-1535201_1280.jpg",
+                },
+                {
+                  name: "Amit K.",
+                  bike: "VYBE Carry 01",
+                  slug: "vybe-carry-01",
+                  stars: 5,
+                  text: "Cargo bike for the family. Carries everything we need. Saved a fortune compared to buying new. Highly recommend VYBE.",
+                  image: "https://cdn.pixabay.com/photo/2016/11/18/17/20/bicycle-1834929_1280.jpg",
+                },
+              ].map((review, i) => (
+                <ScrollReveal key={review.name} delay={i * 100}>
+                  <div className="rounded-card border border-border bg-white p-6 h-full flex flex-col">
+                    <div className="flex gap-1 mb-4">
+                      {Array.from({ length: review.stars }).map((_, j) => (
+                        <span key={j} className="text-yellow-400 text-sm">★</span>
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed flex-1">
+                      &ldquo;{review.text}&rdquo;
+                    </p>
+                    <div className="mt-5 pt-4 border-t border-border">
+                      <p className="font-heading text-sm font-bold text-foreground">{review.name}</p>
+                      <Link href={`/bikes/${review.slug}`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                        Purchased: {review.bike} →
+                      </Link>
+                    </div>
+                  </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            8. REAL RIDERS — Social proof
-        ═══════════════════════════════════════════════════════════ */}
-        <section className="bg-muted/30 px-5 py-20">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <div className="text-center">
-              <Badge variant="dark" className="mb-3">Reviews</Badge>
-              <h2 className="font-heading text-3xl font-bold text-foreground">
-                Real riders
-              </h2>
-            </div>
-            <div className="grid gap-5 md:grid-cols-3">
-              <div className="rounded-card border border-border bg-white p-6">
-                <div className="flex gap-1 text-lime">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="h-4 w-4 fill-current" />
-                  ))}
-                </div>
-                <p className="mt-4 text-sm text-muted-foreground">
-                  &ldquo;Bought a RadCity for my daily commute. Bike was exactly as described,
-                  great condition. The team was super helpful.&rdquo;
-                </p>
-                <p className="mt-4 text-sm font-bold text-foreground">Rahul S.</p>
-              </div>
-              <div className="rounded-card border border-border bg-white p-6">
-                <div className="flex gap-1 text-lime">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="h-4 w-4 fill-current" />
-                  ))}
-                </div>
-                <p className="mt-4 text-sm text-muted-foreground">
-                  &ldquo;The repair service is top notch. They fixed my battery issue
-                  the same day. Fair pricing too.&rdquo;
-                </p>
-                <p className="mt-4 text-sm font-bold text-foreground">Priya M.</p>
-              </div>
-              <div className="rounded-card border border-border bg-white p-6">
-                <div className="flex gap-1 text-lime">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="h-4 w-4 fill-current" />
-                  ))}
-                </div>
-                <p className="mt-4 text-sm text-muted-foreground">
-                  &ldquo;Found exactly what I was looking for. A cargo bike for under ₹2L.
-                  Saved a fortune compared to buying new.&rdquo;
-                </p>
-                <p className="mt-4 text-sm font-bold text-foreground">Amit K.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════════════
-            9. FIND YOUR RIDE — Final CTA
+            10. CTA
         ═══════════════════════════════════════════════════════════ */}
         <section className="px-5 pb-20">
           <div className="mx-auto max-w-6xl">
-            <div className="overflow-hidden rounded-card bg-asphalt p-10 text-center md:p-16">
-              <h2 className="font-heading text-3xl font-bold text-lime md:text-4xl">
-                Ready to find your ride?
-              </h2>
-              <p className="mx-auto mt-4 max-w-md text-warm-white/60">
-                Browse our full inventory of inspected, certified used e-bikes.
-              </p>
-              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Button size="lg" asChild className="bg-lime text-asphalt hover:bg-lime-dark">
-                  <Link href="/bikes">
-                    Browse All Bikes
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
-                  <Link href="/contact">
-                    Contact Us
-                  </Link>
-                </Button>
+            <ScrollReveal>
+              <div className="rounded-card bg-asphalt p-12 text-center md:p-16">
+                <h2 className="font-heading text-3xl font-bold text-warm-white md:text-4xl">
+                  Ready to find your ride?
+                </h2>
+                <p className="mx-auto mt-4 max-w-md text-warm-white/50">
+                  Browse our full collection of inspected, certified used e-bikes.
+                </p>
+                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <Button size="lg" asChild>
+                    <Link href="/bikes">
+                      Browse All Bikes
+                      <span className="ml-1">→</span>
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
+                    <Link href="/contact">Contact Us</Link>
+                  </Button>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </section>
       </main>

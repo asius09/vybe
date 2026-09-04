@@ -9,20 +9,20 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-asphalt shadow-vybe-lime hover:bg-lime-dark hover:shadow-vybe-md active:bg-lime-deeper",
+          "bg-foreground text-warm-white shadow-vybe hover:bg-foreground/90 active:bg-foreground/80",
         destructive:
-          "bg-coral text-white shadow-vybe-coral hover:bg-coral-dark hover:shadow-vybe-md active:bg-coral-dark/90",
+          "bg-coral text-white shadow-vybe-coral hover:bg-coral-dark active:bg-coral-dark/90",
         outline:
-          "border-2 border-neutral-border bg-transparent text-foreground hover:bg-muted hover:shadow-vybe-sm hover:border-lime/40 active:bg-muted/70",
+          "border-2 border-border bg-transparent text-foreground hover:bg-muted active:bg-muted/70",
         secondary:
-          "bg-coral text-white shadow-vybe-coral hover:bg-coral-dark hover:shadow-vybe-md active:bg-coral-dark/90",
+          "bg-muted text-foreground hover:bg-muted/80 active:bg-muted/60",
         ghost:
-          "text-foreground hover:bg-muted hover:shadow-vybe-sm",
+          "text-foreground hover:bg-muted",
         link: "text-foreground underline-offset-4 hover:underline",
         lime:
-          "bg-primary text-asphalt shadow-vybe-lime hover:bg-lime-dark hover:shadow-vybe-md active:bg-lime-deeper",
+          "bg-lime text-asphalt shadow-vybe-lime hover:bg-lime-dark active:bg-lime-deeper",
         dark:
-          "bg-asphalt text-lime shadow-vybe hover:bg-asphalt/90 hover:shadow-vybe-md active:bg-asphalt/80",
+          "bg-asphalt text-lime shadow-vybe hover:bg-asphalt/90 active:bg-asphalt/80",
       },
       size: {
         default: "h-11 px-6 py-2",
@@ -52,7 +52,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(
           buttonVariants({ variant, size, className }),
-          // Icon slide micro-interaction
           "[&_svg]:transition-transform [&_svg]:duration-200 [&_svg]:ease-out",
           "group-hover:[&_svg]:translate-x-0.5"
         )}

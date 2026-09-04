@@ -8,16 +8,15 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground shadow-sm",
+          "border-transparent bg-foreground text-warm-white",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground shadow-sm",
+          "border-transparent bg-muted text-foreground",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground shadow-sm",
+          "border-transparent bg-destructive text-destructive-foreground",
         outline: "text-foreground border-border",
-        // VYBE branded badges
-        lime: "border-lime/30 bg-lime/15 text-lime-deeper",
-        coral: "border-coral/30 bg-coral/15 text-coral",
-        purple: "border-purple/30 bg-purple/15 text-purple",
+        lime: "border-lime/30 bg-lime/10 text-lime-deeper",
+        coral: "border-coral/30 bg-coral/10 text-coral",
+        purple: "border-purple/30 bg-purple/10 text-purple",
         dark: "border-asphalt/20 bg-asphalt text-warm-white",
       },
     },
