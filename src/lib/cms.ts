@@ -33,7 +33,7 @@ export interface CMSContent {
 const defaultContent: CMSContent = {
   announcement: {
     text: "Free test rides · Serviced bikes · 30-day support",
-    location: "DELHI NCR",
+    location: "",
     enabled: true,
   },
   hero: {
@@ -55,7 +55,7 @@ const defaultContent: CMSContent = {
     subtitle: "Select what brings you here and we'll guide you through it.",
     phone: "+91 93154 05304",
     email: "itsmeasius@gmail.com",
-    address: "Delhi, India",
+    address: "India",
   },
 };
 

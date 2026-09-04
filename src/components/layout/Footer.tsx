@@ -26,7 +26,6 @@ const footerLinks = [
   {
     title: "Contact",
     items: [
-      { label: "Delhi, India", href: "" },
       { label: "+91 93154 05304", href: "tel:+919315405304" },
       { label: "itsmeasius@gmail.com", href: "mailto:itsmeasius@gmail.com" },
     ],
@@ -89,27 +88,27 @@ export function Footer() {
       </div>
 
       {/* ═══ Bottom Bar ═══ */}
-      <div className="mx-auto max-w-6xl px-5 py-5 border-t border-warm-white/5">
+      <div className="px-5 py-5 border-t mt-8 border-warm-white/5">
         <div className="flex flex-col items-center justify-between gap-3 text-[11px] text-warm-white/20 md:flex-row">
           <p>&copy; {new Date().getFullYear()} VYBE Bikes</p>
           <div className="flex items-center gap-3">
             <span>Built for riders, by riders.</span>
-            <a href="https://x.com/asius09" target="_blank" rel="noopener noreferrer" className="text-warm-white/25 hover:text-warm-white/60 transition-colors">
+            <a href="https://x.com/_asius" target="_blank" rel="noopener noreferrer" className="text-warm-white/25 hover:text-warm-white/60 transition-colors">
               <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
             </a>
           </div>
         </div>
       </div>
 
-      {/* ═══ VYBE WORDMARK — Absolute Bottom ═══ */}
+      {/* ═══ VYBE WORDMARK — Touches very bottom ═══ */}
       <div
         ref={maskRef}
         onPointerMove={handlePointerMove}
         onPointerLeave={() => setSpotlightRadius(200)}
-        className="relative w-full overflow-hidden cursor-default select-none"
+        className="relative w-full overflow-hidden cursor-default select-none leading-none"
         style={{ "--mx": "50%", "--my": "50%", "--spotlight-radius": `${spotlightRadius}px` } as React.CSSProperties}
       >
-        <h2 className="font-heading text-[clamp(80px,22vw,320px)] font-extrabold leading-[0.85] text-warm-white/[0.04] tracking-tighter text-center px-0 py-4 select-none">
+        <h2 className="font-heading text-[clamp(80px,22vw,550px)] font-extrabold leading-[0.82] text-warm-white/[0.04] tracking-tighter text-center px-0 pt-4 m-0 select-none">
           VYBE
         </h2>
         <div
@@ -119,7 +118,7 @@ export function Footer() {
             WebkitMaskImage: "radial-gradient(circle var(--spotlight-radius) at var(--mx) var(--my), black 0%, transparent 100%)",
           }}
         >
-          <h2 className="font-heading text-[clamp(80px,22vw,320px)] font-extrabold leading-[0.85] text-warm-white tracking-tighter text-center px-0 py-4 select-none">
+          <h2 className="font-heading text-[clamp(80px,22vw,550px)] font-extrabold leading-[0.82] text-warm-white tracking-tighter text-center px-0 pt-4 m-0 select-none">
             VYBE
           </h2>
         </div>

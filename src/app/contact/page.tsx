@@ -200,7 +200,7 @@ export default function ContactPage() {
                   <div className="flex items-start gap-3">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-semibold">Delhi, India</p>
+                      <p className="text-sm font-semibold">India</p>
                       <p className="text-xs text-muted-foreground">Local pickup available</p>
                     </div>
                   </div>

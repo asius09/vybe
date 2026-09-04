@@ -52,11 +52,11 @@ export function Header() {
       {/* Announcement Bar */}
       <div className="bg-asphalt text-warm-white">
         <div className="mx-auto flex h-7 max-w-6xl items-center justify-center gap-4 px-5 text-[11px] font-medium tracking-wide">
-          <span className="text-lime font-bold">DELHI NCR</span>
-          <span className="text-warm-white/20">·</span>
           <span className="text-warm-white/50">Free test rides</span>
           <span className="text-warm-white/20">·</span>
           <span className="text-warm-white/50">30-day support</span>
+          <span className="text-warm-white/20">·</span>
+          <span className="text-warm-white/50">Inspected & serviced</span>
         </div>
       </div>
 

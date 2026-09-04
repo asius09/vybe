@@ -22,7 +22,7 @@ function BikeCardGrid({ bike }: { bike: VYBEbike }) {
   return (
     <Link href={`/bikes/${bike.slug}`} className="group block">
       <div className="overflow-hidden rounded-card border border-border bg-white transition-all duration-300 group-hover:shadow-vybe-md group-hover:border-border/80">
-        <div className="relative aspect-[4/3] overflow-hidden bg-muted/30">
+        <div className="relative aspect-4/3 overflow-hidden bg-muted/30">
           <img
             src={bike.image}
             alt={bike.name}
@@ -73,14 +73,14 @@ export default function HomePage() {
                 className="w-full h-full object-cover"
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/50 to-asphalt/20" />
-            <div className="absolute inset-0 bg-gradient-to-r from-asphalt/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-asphalt via-asphalt/50 to-asphalt/20" />
+            <div className="absolute inset-0 bg-linear-to-r from-asphalt/60 via-transparent to-transparent" />
           </div>
 
           {/* Content — bottom left */}
           <div className="relative z-10 mx-auto max-w-6xl px-5 py-16 md:py-24 w-full stagger-children">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-warm-white/30 mb-4">
-              Delhi NCR&apos;s trusted used e-bike shop
+              Premium pre-owned e-bikes
             </p>
             <h1 className="font-heading text-5xl font-extrabold leading-[1.1] tracking-tight text-warm-white md:text-6xl lg:text-7xl">
               Your next
@@ -106,7 +106,7 @@ export default function HomePage() {
           {/* Scroll indicator */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 opacity-40">
             <span className="text-[10px] uppercase tracking-widest text-warm-white/50">Scroll</span>
-            <div className="w-px h-8 bg-gradient-to-b from-warm-white/50 to-transparent" />
+            <div className="w-px h-8 bg-linear-to-b from-warm-white/50 to-transparent" />
           </div>
         </section>
 
@@ -129,7 +129,7 @@ export default function HomePage() {
                 <ScrollReveal key={cat.name} delay={i * 80}>
                   <Link
                     href={`/bikes?category=${cat.slug}`}
-                    className="group relative block aspect-[4/3] overflow-hidden rounded-card"
+                    className="group relative block aspect-4/3 overflow-hidden rounded-card"
                   >
                     <img
                       src={cat.image}
@@ -158,8 +158,8 @@ export default function HomePage() {
           </div>
           <div className="relative">
             {/* Fade edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-linear-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-linear-to-l from-background to-transparent z-10 pointer-events-none" />
             {/* Scrolling row */}
             <div className="flex gap-12 animate-[marquee_30s_linear_infinite] w-max">
               {[...brands, ...brands].map((brand, i) => (
