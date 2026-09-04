@@ -89,7 +89,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Right — Bike image only */}
+              {/* Right — Bike image as background context */}
               {heroBike && (
                 <Link href={`/bikes/${heroBike.slug}`} className="group relative block">
                   <div className="relative overflow-hidden rounded-2xl">
@@ -99,12 +99,6 @@ export default function HomePage() {
                         alt={heroBike.name}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-asphalt/40 to-transparent" />
-                    </div>
-                    {/* Minimal label */}
-                    <div className="absolute bottom-0 left-0 right-0 p-5">
-                      <p className="font-heading text-lg font-bold text-warm-white">{heroBike.name}</p>
-                      <p className="text-sm text-warm-white/50">{formatPriceINR(heroBike.price)}</p>
                     </div>
                   </div>
                 </Link>
@@ -112,12 +106,12 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* E-bike image as subtle background */}
-          <div className="absolute bottom-0 right-0 w-1/2 h-full opacity-[0.06] pointer-events-none overflow-hidden hidden md:block">
+          {/* E-bike background */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <img
               src="https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=1200"
               alt=""
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover opacity-[0.05]"
             />
           </div>
         </section>

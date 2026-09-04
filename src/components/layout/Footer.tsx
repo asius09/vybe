@@ -64,17 +64,6 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ═══ E-BIKE IMAGE BAND ═══ */}
-      <div className="relative h-48 md:h-64 overflow-hidden">
-        <img
-          src="https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=1400"
-          alt=""
-          className="w-full h-full object-cover opacity-15"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-asphalt via-transparent to-transparent" />
-      </div>
-
       {/* ═══ VYBE WORDMARK — Very Bottom ═══ */}
       <div
         ref={maskRef}
