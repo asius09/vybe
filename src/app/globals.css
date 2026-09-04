@@ -1,0 +1,175 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-card: 20px;
+  --radius-input: 12px;
+
+  /* VYBE brand colors */
+  --color-asphalt: #151515;
+  --color-warm-white: #F5F3EA;
+  --color-lime: #C8FF3D;
+  --color-lime-dark: #A8D632;
+  --color-lime-deeper: #8BB529;
+  --color-coral: #FF6B4A;
+  --color-coral-dark: #E55535;
+  --color-purple: #8B7CFF;
+  --color-purple-dark: #7060E0;
+  --color-neutral-border: #D9D9D2;
+  --color-muted-text: #6B6B65;
+
+  --font-heading: var(--font-syne);
+  --font-body: var(--font-inter);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* VYBE Brand Colors */
+  --background: #F5F3EA;
+  --foreground: #151515;
+  --card: #FFFFFF;
+  --card-foreground: #151515;
+  --popover: #FFFFFF;
+  --popover-foreground: #151515;
+  --primary: #C8FF3D;
+  --primary-foreground: #151515;
+  --secondary: #FF6B4A;
+  --secondary-foreground: #FFFFFF;
+  --muted: #D9D9D2;
+  --muted-foreground: #6B6B65;
+  --accent: #8B7CFF;
+  --accent-foreground: #FFFFFF;
+  --destructive: #FF6B4A;
+  --destructive-foreground: #FFFFFF;
+  --border: #D9D9D2;
+  --input: #D9D9D2;
+  --ring: #C8FF3D;
+  --chart-1: #C8FF3D;
+  --chart-2: #FF6B4A;
+  --chart-3: #8B7CFF;
+  --chart-4: #151515;
+  --chart-5: #6B6B65;
+  --sidebar: #151515;
+  --sidebar-foreground: #F5F3EA;
+  --sidebar-primary: #C8FF3D;
+  --sidebar-primary-foreground: #151515;
+  --sidebar-accent: #1F1F1F;
+  --sidebar-accent-foreground: #F5F3EA;
+  --sidebar-border: #2A2A2A;
+  --sidebar-ring: #C8FF3D;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  /* Fix Syne descender clipping — generous line-height for all headings */
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    line-height: 1.15;
+    overflow: visible;
+  }
+}
+
+/* ─── VYBE Shadow System ─── */
+@layer utilities {
+  .shadow-vybe-sm {
+    box-shadow: 0 1px 2px rgba(21, 21, 21, 0.04), 0 1px 3px rgba(21, 21, 21, 0.06);
+  }
+  .shadow-vybe {
+    box-shadow: 0 2px 4px rgba(21, 21, 21, 0.04), 0 4px 12px rgba(21, 21, 21, 0.08);
+  }
+  .shadow-vybe-md {
+    box-shadow: 0 4px 6px rgba(21, 21, 21, 0.04), 0 8px 24px rgba(21, 21, 21, 0.10);
+  }
+  .shadow-vybe-lg {
+    box-shadow: 0 8px 12px rgba(21, 21, 21, 0.04), 0 16px 48px rgba(21, 21, 21, 0.12);
+  }
+  .shadow-vybe-lime {
+    box-shadow: 0 4px 16px rgba(200, 255, 61, 0.3), 0 2px 4px rgba(21, 21, 21, 0.06);
+  }
+  .shadow-vybe-coral {
+    box-shadow: 0 4px 16px rgba(255, 107, 74, 0.25), 0 2px 4px rgba(21, 21, 21, 0.06);
+  }
+
+  /* ─── Card hover: accent border reveal ─── */
+  .card-hover-vybe {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .card-hover-vybe:hover {
+    border-color: var(--color-lime);
+    box-shadow: 0 4px 6px rgba(21, 21, 21, 0.04), 0 8px 24px rgba(21, 21, 21, 0.10);
+  }
+
+  /* ─── Button icon slide micro-interaction ─── */
+  .btn-icon-slide {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-icon-slide .btn-icon {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+  }
+  .btn-icon-slide:hover .btn-icon {
+    transform: translateX(3px);
+  }
+
+  /* ─── Price slider custom ─── */
+  .slider-track {
+    background: var(--color-muted);
+  }
+  .slider-range {
+    background: var(--color-lime);
+  }
+  .slider-thumb {
+    border-color: var(--color-lime);
+    background: var(--color-card);
+    box-shadow: 0 2px 8px rgba(21, 21, 21, 0.15);
+  }
+}
+
+/* ─── Marquee Animation ─── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
