@@ -2,6 +2,7 @@
 
 import { useRef, useCallback } from "react";
 import Link from "next/link";
+import { BikeSvg } from "@/components/ui/bike-svg";
 
 export function Footer() {
   const maskRef = useRef<HTMLDivElement>(null);
@@ -14,57 +15,20 @@ export function Footer() {
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     el.style.setProperty("--mx", `${x}%`);
     el.style.setProperty("--my", `${y}%`);
+
+    // Shrink spotlight as it approaches edges
+    const distFromCenter = Math.sqrt(Math.pow(x - 50, 2) + Math.pow(y - 50, 2));
+    const maxDist = 60;
+    const shrinkFactor = Math.max(0, 1 - distFromCenter / maxDist);
+    const radius = 80 + shrinkFactor * 120;
+    el.style.setProperty("--spotlight-radius", `${radius}px`);
   }, []);
 
   return (
     <footer className="bg-asphalt text-warm-white">
       <div className="mx-auto max-w-6xl px-5 py-16">
-        {/* Large Wordmark with Spotlight */}
-        <div className="mb-16">
-          <div
-            ref={maskRef}
-            onPointerMove={handlePointerMove}
-            className="relative select-none cursor-default"
-            style={{ "--mx": "50%", "--my": "50%" } as React.CSSProperties}
-          >
-            {/* Background text (visible) */}
-            <h2 className="font-heading text-[clamp(80px,18vw,240px)] font-extrabold leading-none text-warm-white/10 tracking-tighter">
-              VYBE
-            </h2>
-
-            {/* Spotlight reveal (bike image beneath) */}
-            <div
-              className="absolute inset-0 flex items-center justify-center pointer-events-none"
-              style={{
-                maskImage: "radial-gradient(circle 120px at var(--mx) var(--my), black 0%, transparent 100%)",
-                WebkitMaskImage: "radial-gradient(circle 120px at var(--mx) var(--my), black 0%, transparent 100%)",
-              }}
-            >
-              <img
-                src="https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=800"
-                alt=""
-                className="w-full h-full object-cover opacity-40"
-              />
-            </div>
-
-            {/* Spotlight text reveal */}
-            <h2
-              className="absolute inset-0 flex items-center justify-center font-heading text-[clamp(80px,18vw,240px)] font-extrabold leading-none text-warm-white tracking-tighter pointer-events-none"
-              style={{
-                maskImage: "radial-gradient(circle 120px at var(--mx) var(--my), black 0%, transparent 100%)",
-                WebkitMaskImage: "radial-gradient(circle 120px at var(--mx) var(--my), black 0%, transparent 100%)",
-              }}
-            >
-              VYBE
-            </h2>
-          </div>
-          <p className="mt-4 text-sm text-warm-white/40 max-w-md">
-            Curated used e-bikes. Inspected, serviced, ready to ride.
-          </p>
-        </div>
-
         {/* Links Grid */}
-        <div className="grid gap-10 md:grid-cols-4" role="contentinfo">
+        <div className="grid gap-10 md:grid-cols-4">
           <div>
             <h4 className="font-heading text-xs font-bold uppercase tracking-widest text-warm-white/30 mb-4">Shop</h4>
             <ul className="space-y-2.5">
@@ -104,10 +68,44 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="mt-12 border-t border-warm-white/10 pt-8 flex flex-col items-center justify-between gap-4 text-xs text-warm-white/20 md:flex-row">
-          <p>&copy; {new Date().getFullYear()} VYBE Bikes. All rights reserved.</p>
-          <p>Built for riders, by riders.</p>
+        {/* Bottom — Wordmark with Spotlight */}
+        <div className="mt-16 pt-8 border-t border-warm-white/10">
+          <div
+            ref={maskRef}
+            onPointerMove={handlePointerMove}
+            className="relative select-none cursor-default"
+            style={{
+              "--mx": "50%",
+              "--my": "50%",
+              "--spotlight-radius": "200px",
+            } as React.CSSProperties}
+          >
+            {/* Background text (dimmed) */}
+            <h2 className="font-heading text-[clamp(60px,16vw,180px)] font-extrabold leading-none text-warm-white/[0.06] tracking-tighter text-center">
+              VYBE
+            </h2>
+
+            {/* Spotlight reveal — SVG bike + bright text */}
+            <div
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              style={{
+                maskImage: "radial-gradient(circle var(--spotlight-radius) at var(--mx) var(--my), black 0%, transparent 100%)",
+                WebkitMaskImage: "radial-gradient(circle var(--spotlight-radius) at var(--mx) var(--my), black 0%, transparent 100%)",
+              }}
+            >
+              <div className="absolute inset-0 flex items-center justify-center">
+                <BikeSvg className="w-48 md:w-64 h-auto opacity-30" color="#C8FF3D" />
+              </div>
+              <h2 className="font-heading text-[clamp(60px,16vw,180px)] font-extrabold leading-none text-warm-white tracking-tighter text-center">
+                VYBE
+              </h2>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col items-center justify-between gap-4 text-xs text-warm-white/20 md:flex-row">
+            <p>&copy; {new Date().getFullYear()} VYBE Bikes. All rights reserved.</p>
+            <p>Built for riders, by riders.</p>
+          </div>
         </div>
       </div>
     </footer>

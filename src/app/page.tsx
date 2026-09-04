@@ -6,7 +6,8 @@ import { Footer } from "@/components/layout/Footer";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getFeaturedBikes, getNewArrivals, getCategories, formatPriceINR } from "@/data/loader";
 import type { VYBEbike } from "@/data/loader";
-import Image from "next/image";
+import { BikeSvg } from "@/components/ui/bike-svg";
+import { Battery, Zap, Shield, ArrowRight } from "lucide-react";
 
 const rideCategories = [
   {
@@ -92,6 +93,7 @@ export default function HomePage() {
   const displayBikes = [...newArrivals.filter((b) => !featured.find((f) => f.id === b.id)), ...featured];
   const row1 = displayBikes.slice(0, 3);
   const row2 = displayBikes.slice(3, 6);
+  const heroBike = featured[0] || newArrivals[0];
 
   return (
     <div className="min-h-screen bg-background">
@@ -99,32 +101,125 @@ export default function HomePage() {
 
       <main id="main-content">
         {/* ═══════════════════════════════════════════════════════════
-            1. HERO
+            1. HERO — Featured E-Bike Spotlight
         ═══════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-asphalt px-5 py-24 md:py-36">
-          <div className="mx-auto max-w-6xl">
-            <div className="max-w-2xl space-y-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-warm-white/40">Curated used e-bikes</p>
-              <h1 className="font-heading text-5xl font-extrabold leading-[1.05] tracking-tight text-warm-white md:text-7xl">
-                Find your
-                <br />
-                next ride.
-              </h1>
-              <p className="max-w-md text-base text-warm-white/60">
-                Inspected, serviced, and ready to ride. Every VYBE bike passes 32 checks before it reaches you.
-              </p>
-              <div className="flex flex-col gap-3 sm:flex-row pt-2">
-                <Button size="lg" asChild>
-                  <Link href="/bikes">
-                    Browse Collection
-                    <span className="ml-1">→</span>
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
-                  <Link href="/sell">Sell Your Bike</Link>
-                </Button>
+        <section className="relative overflow-hidden bg-asphalt">
+          <div className="mx-auto max-w-6xl px-5 py-16 md:py-24">
+            <div className="grid gap-10 md:grid-cols-2 md:items-center">
+              {/* Left — Copy + CTAs */}
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 rounded-full bg-warm-white/10 px-3 py-1.5 backdrop-blur-sm">
+                  <span className="h-2 w-2 rounded-full bg-lime animate-pulse" />
+                  <span className="text-xs font-semibold text-warm-white/80">New arrivals weekly</span>
+                </div>
+                <h1 className="font-heading text-5xl font-extrabold leading-[1.05] tracking-tight text-warm-white md:text-6xl lg:text-7xl">
+                  Find your
+                  <br />
+                  <span className="text-lime">next ride.</span>
+                </h1>
+                <p className="max-w-md text-base text-warm-white/50 leading-relaxed">
+                  Inspected, serviced, and ready to ride. Every VYBE bike passes 32 checks before it reaches you.
+                </p>
+
+                {/* Quick stats */}
+                <div className="flex gap-6 pt-2">
+                  <div>
+                    <p className="font-heading text-2xl font-extrabold text-lime">{heroBike?.batteryHealthPercent || 95}%</p>
+                    <p className="text-[11px] text-warm-white/40">Avg battery</p>
+                  </div>
+                  <div className="w-px bg-warm-white/10" />
+                  <div>
+                    <p className="font-heading text-2xl font-extrabold text-warm-white">{heroBike?.estimatedRangeKm || 60} km</p>
+                    <p className="text-[11px] text-warm-white/40">Est. range</p>
+                  </div>
+                  <div className="w-px bg-warm-white/10" />
+                  <div>
+                    <p className="font-heading text-2xl font-extrabold text-warm-white">32</p>
+                    <p className="text-[11px] text-warm-white/40">Point check</p>
+                  </div>
+                </div>
+
+                {/* CTAs */}
+                <div className="flex flex-col gap-3 sm:flex-row pt-2">
+                  <Button size="lg" className="bg-lime text-asphalt hover:bg-lime-dark font-bold" asChild>
+                    <Link href="/bikes">
+                      Browse All Bikes
+                      <ArrowRight className="h-4 w-4 ml-1" />
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
+                    <Link href="/sell">
+                      Sell Your Bike
+                      <ArrowRight className="h-4 w-4 ml-1" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
+
+              {/* Right — Featured Bike Card */}
+              {heroBike && (
+                <div className="relative">
+                  {/* Glow */}
+                  <div className="absolute -inset-10 bg-lime/5 blur-3xl rounded-full" />
+
+                  <Link href={`/bikes/${heroBike.slug}`} className="group relative block">
+                    <div className="relative overflow-hidden rounded-2xl border border-warm-white/10 bg-warm-white/5 backdrop-blur-md">
+                      {/* Bike image */}
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        <img
+                          src={heroBike.image}
+                          alt={heroBike.name}
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-asphalt/80 via-asphalt/20 to-transparent" />
+
+                        {/* Badges */}
+                        <div className="absolute left-4 top-4 flex gap-2">
+                          <Badge variant="lime">Featured</Badge>
+                          {heroBike.recentlyArrived && <Badge variant="coral">New</Badge>}
+                        </div>
+
+                        {/* Bottom info overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 p-5">
+                          <p className="text-xs text-warm-white/50">{heroBike.category} · {heroBike.year}</p>
+                          <h3 className="font-heading text-xl font-bold text-warm-white">{heroBike.name}</h3>
+                          <div className="mt-2 flex items-center gap-4">
+                            <p className="font-heading text-2xl font-extrabold text-lime">{formatPriceINR(heroBike.price)}</p>
+                            {heroBike.originalPrice > heroBike.price && (
+                              <p className="text-sm text-warm-white/40 line-through">{formatPriceINR(heroBike.originalPrice)}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Specs strip */}
+                      <div className="grid grid-cols-3 border-t border-warm-white/10 bg-warm-white/5">
+                        <div className="p-3 text-center border-r border-warm-white/10">
+                          <Battery className="h-4 w-4 mx-auto text-lime mb-1" />
+                          <p className="text-xs font-bold text-warm-white">{heroBike.batteryHealthPercent}%</p>
+                          <p className="text-[10px] text-warm-white/40">Battery</p>
+                        </div>
+                        <div className="p-3 text-center border-r border-warm-white/10">
+                          <Zap className="h-4 w-4 mx-auto text-lime mb-1" />
+                          <p className="text-xs font-bold text-warm-white">{heroBike.motorPowerW}W</p>
+                          <p className="text-[10px] text-warm-white/40">Motor</p>
+                        </div>
+                        <div className="p-3 text-center">
+                          <Shield className="h-4 w-4 mx-auto text-lime mb-1" />
+                          <p className="text-xs font-bold text-warm-white">{heroBike.condition}</p>
+                          <p className="text-[10px] text-warm-white/40">Condition</p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              )}
             </div>
+          </div>
+
+          {/* SVG Bike decoration at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 opacity-[0.04] pointer-events-none overflow-hidden">
+            <BikeSvg className="w-full h-auto" color="#F5F3EA" />
           </div>
         </section>
 
