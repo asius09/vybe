@@ -28,7 +28,7 @@ export function Footer() {
             style={{ "--mx": "50%", "--my": "50%" } as React.CSSProperties}
           >
             {/* Background text (visible) */}
-            <h2 className="font-heading text-[120px] sm:text-[180px] md:text-[240px] font-extrabold leading-none text-warm-white/10 tracking-tighter">
+            <h2 className="font-heading text-[clamp(80px,18vw,240px)] font-extrabold leading-none text-warm-white/10 tracking-tighter">
               VYBE
             </h2>
 
@@ -49,7 +49,7 @@ export function Footer() {
 
             {/* Spotlight text reveal */}
             <h2
-              className="absolute inset-0 flex items-center justify-center font-heading text-[120px] sm:text-[180px] md:text-[240px] font-extrabold leading-none text-warm-white tracking-tighter pointer-events-none"
+              className="absolute inset-0 flex items-center justify-center font-heading text-[clamp(80px,18vw,240px)] font-extrabold leading-none text-warm-white tracking-tighter pointer-events-none"
               style={{
                 maskImage: "radial-gradient(circle 120px at var(--mx) var(--my), black 0%, transparent 100%)",
                 WebkitMaskImage: "radial-gradient(circle 120px at var(--mx) var(--my), black 0%, transparent 100%)",

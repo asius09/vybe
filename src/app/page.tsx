@@ -247,30 +247,30 @@ export default function HomePage() {
 
             {/* Story tree */}
             <div className="relative">
-              {/* Vertical line */}
-              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-1/2" />
+              {/* Vertical line — hidden on mobile */}
+              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-1/2" />
 
-              {/* Point 1 — Left */}
+              {/* Point 1 — Left on desktop, simple on mobile */}
               <ScrollReveal direction="left" delay={0}>
-                <div className="relative flex items-center mb-16">
-                  <div className="w-1/2 pr-12 text-right">
+                <div className="relative flex items-start md:items-center mb-12 md:mb-16">
+                  <div className="pl-12 md:w-1/2 md:pr-12 md:text-right">
                     <p className="font-heading text-xs font-bold text-lime-deeper uppercase tracking-wider mb-1">01</p>
                     <h3 className="font-heading text-xl font-bold text-foreground">32-Point Inspection</h3>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                       Every bike goes through frame, battery, motor, brake, and electrical checks. We document everything.
                     </p>
                   </div>
-                  <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-lime border-4 border-background z-10" />
-                  <div className="w-1/2" />
+                  <div className="absolute left-2 md:left-1/2 md:-translate-x-1/2 w-3 h-3 rounded-full bg-lime border-4 border-background z-10 mt-1 md:mt-0" />
+                  <div className="hidden md:block md:w-1/2" />
                 </div>
               </ScrollReveal>
 
-              {/* Point 2 — Right */}
+              {/* Point 2 — Right on desktop, simple on mobile */}
               <ScrollReveal direction="right" delay={100}>
-                <div className="relative flex items-center mb-16">
-                  <div className="w-1/2" />
-                  <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-coral border-4 border-background z-10" />
-                  <div className="w-1/2 pl-12">
+                <div className="relative flex items-start md:items-center mb-12 md:mb-16">
+                  <div className="hidden md:block md:w-1/2" />
+                  <div className="absolute left-2 md:left-1/2 md:-translate-x-1/2 w-3 h-3 rounded-full bg-coral border-4 border-background z-10 mt-1 md:mt-0" />
+                  <div className="pl-12 md:w-1/2 md:pl-12">
                     <p className="font-heading text-xs font-bold text-coral uppercase tracking-wider mb-1">02</p>
                     <h3 className="font-heading text-xl font-bold text-foreground">Serviced Before Sale</h3>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
@@ -280,18 +280,18 @@ export default function HomePage() {
                 </div>
               </ScrollReveal>
 
-              {/* Point 3 — Left */}
+              {/* Point 3 — Left on desktop, simple on mobile */}
               <ScrollReveal direction="left" delay={200}>
-                <div className="relative flex items-center">
-                  <div className="w-1/2 pr-12 text-right">
+                <div className="relative flex items-start md:items-center">
+                  <div className="pl-12 md:w-1/2 md:pr-12 md:text-right">
                     <p className="font-heading text-xs font-bold text-purple uppercase tracking-wider mb-1">03</p>
                     <h3 className="font-heading text-xl font-bold text-foreground">30-Day Support</h3>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                       After purchase, we&apos;re here for 30 days. Free check-up, adjustments, and peace of mind.
                     </p>
                   </div>
-                  <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-purple border-4 border-background z-10" />
-                  <div className="w-1/2" />
+                  <div className="absolute left-2 md:left-1/2 md:-translate-x-1/2 w-3 h-3 rounded-full bg-purple border-4 border-background z-10 mt-1 md:mt-0" />
+                  <div className="hidden md:block md:w-1/2" />
                 </div>
               </ScrollReveal>
             </div>

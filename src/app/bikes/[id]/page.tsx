@@ -166,12 +166,14 @@ export default async function BikeDetailPage({
         {/* ═══ TABS ═══ */}
         <div className="mt-12">
           <Tabs defaultValue="specs">
-            <TabsList>
-              <TabsTrigger value="specs">What am I getting?</TabsTrigger>
-              <TabsTrigger value="condition">Condition</TabsTrigger>
-              <TabsTrigger value="battery">Battery & Range</TabsTrigger>
-              <TabsTrigger value="ownership">Ownership</TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto -mx-5 px-5 pb-2">
+              <TabsList className="w-max min-w-full">
+                <TabsTrigger value="specs">Specs</TabsTrigger>
+                <TabsTrigger value="condition">Condition</TabsTrigger>
+                <TabsTrigger value="battery">Battery</TabsTrigger>
+                <TabsTrigger value="ownership">Ownership</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="specs" className="mt-6">
               <div className="rounded-card border border-border bg-white p-6">

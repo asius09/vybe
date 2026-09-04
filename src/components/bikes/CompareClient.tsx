@@ -60,7 +60,8 @@ export function CompareClient({ allBikes }: { allBikes: VYBEbike[] }) {
         <p className="mt-2 text-muted-foreground">{compareBikes.length} bikes selected</p>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto -mx-5 px-5 pb-4">
+        <div className="min-w-[600px]">
         <table className="w-full text-left">
           <thead>
             <tr>
@@ -96,7 +97,11 @@ export function CompareClient({ allBikes }: { allBikes: VYBEbike[] }) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
+
+      {/* Mobile scroll hint */}
+      <p className="mt-4 text-center text-xs text-muted-foreground md:hidden">← Scroll to see all specs →</p>
     </div>
   );
 }
