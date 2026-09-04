@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu, X, ChevronDown, ArrowRight, Phone, Mail, ShoppingCart } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, Phone, Mail, ShoppingCart, User } from "lucide-react";
 
 const categories = [
   { name: "City", slug: "city", desc: "Smooth urban rides" },
@@ -52,6 +52,8 @@ export function Header() {
       {/* Announcement Bar */}
       <div className="bg-asphalt text-warm-white">
         <div className="mx-auto flex h-7 max-w-6xl items-center justify-center gap-4 px-5 text-[11px] font-medium tracking-wide">
+          <span className="text-warm-white/50">India</span>
+          <span className="text-warm-white/20">·</span>
           <span className="text-warm-white/50">Free test rides</span>
           <span className="text-warm-white/20">·</span>
           <span className="text-warm-white/50">30-day support</span>
@@ -110,11 +112,17 @@ export function Header() {
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-2">
-            <Button size="sm" variant="outline" asChild>
-              <Link href="/contact">Login</Link>
-            </Button>
-            <button className="flex h-9 w-9 items-center justify-center rounded-full text-foreground hover:bg-muted/50 transition-colors" aria-label="Shopping cart">
+          <div className="hidden md:flex items-center gap-1.5">
+            <Link
+              href="/contact"
+              className="flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium text-foreground hover:bg-muted/60 transition-all duration-200"
+            >
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-foreground text-background">
+                <User className="h-3 w-3" />
+              </div>
+              <span>Login</span>
+            </Link>
+            <button className="flex h-9 w-9 items-center justify-center rounded-full text-foreground hover:bg-muted/60 transition-colors" aria-label="Shopping cart">
               <ShoppingCart className="h-4 w-4" />
             </button>
           </div>
@@ -213,7 +221,7 @@ export function Header() {
       <div
         className={cn(
           "border-t border-border/50 bg-background/90 backdrop-blur-2xl md:hidden transition-all duration-300 ease-out overflow-hidden",
-          mobileOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+          mobileOpen ? "max-h-125 opacity-100" : "max-h-0 opacity-0"
         )}
       >
         <div className="mx-auto max-w-6xl px-5 py-5">
@@ -257,14 +265,16 @@ export function Header() {
           </nav>
           <div className="mt-4 pt-3 border-t border-border/50 space-y-1.5">
             <div className="flex gap-2 mb-3">
-              <Button size="sm" variant="outline" className="flex-1" asChild>
-                <Link href="/contact">Login</Link>
-              </Button>
-              <Button size="sm" variant="outline" asChild>
-                <Link href="/contact" className="flex items-center gap-1.5">
-                  <ShoppingCart className="h-3.5 w-3.5" /> Cart
-                </Link>
-              </Button>
+              <Link
+                href="/contact"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground text-background py-2.5 text-sm font-bold hover:bg-foreground/90 transition-colors"
+              >
+                <User className="h-3.5 w-3.5" />
+                Login
+              </Link>
+              <button className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-foreground hover:bg-muted/50 transition-colors" aria-label="Shopping cart">
+                <ShoppingCart className="h-4 w-4" />
+              </button>
             </div>
             <a href="tel:+919315405304" className="flex items-center gap-2 text-sm text-muted-foreground">
               <Phone className="h-3.5 w-3.5" /> +91 93154 05304

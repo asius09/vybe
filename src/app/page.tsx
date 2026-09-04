@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import { HeroSection } from "@/components/home/HeroSection";
 import { getFeaturedBikes, getNewArrivals, formatPriceINR } from "@/data/loader";
 import type { VYBEbike } from "@/data/loader";
 import { ArrowRight } from "lucide-react";
@@ -53,7 +54,6 @@ export default function HomePage() {
   const displayBikes = [...newArrivals.filter((b) => !featured.find((f) => f.id === b.id)), ...featured];
   const row1 = displayBikes.slice(0, 3);
   const row2 = displayBikes.slice(3, 6);
-  const heroBike = featured[0] || newArrivals[0];
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,54 +61,9 @@ export default function HomePage() {
 
       <main id="main-content">
         {/* ═══════════════════════════════════════════════════════════
-            1. HERO — Premium full-bleed
+            1. HERO — Showcase Carousel + Trust Bar
         ═══════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-asphalt min-h-[85vh] md:min-h-[90vh] flex items-end">
-          {/* Full-bleed bike image */}
-          <div className="absolute inset-0 hero-reveal">
-            {heroBike && (
-              <img
-                src={heroBike.image}
-                alt={heroBike.name}
-                className="w-full h-full object-cover"
-              />
-            )}
-            <div className="absolute inset-0 bg-linear-to-t from-asphalt via-asphalt/50 to-asphalt/20" />
-            <div className="absolute inset-0 bg-linear-to-r from-asphalt/60 via-transparent to-transparent" />
-          </div>
-
-          {/* Content — bottom left */}
-          <div className="relative z-10 mx-auto max-w-6xl px-5 py-16 md:py-24 w-full stagger-children">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-warm-white/30 mb-4">
-              Premium pre-owned e-bikes
-            </p>
-            <h1 className="font-heading text-5xl font-extrabold leading-[1.1] tracking-tight text-warm-white md:text-6xl lg:text-7xl">
-              Your next
-              <br />
-              <span className="text-warm-white/50">ride awaits.</span>
-            </h1>
-            <p className="mt-5 text-base text-warm-white/45 max-w-md leading-relaxed">
-              Inspected. Serviced. Ready to ride.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" className="bg-warm-white text-asphalt hover:bg-warm-white/90 font-bold" asChild>
-                <Link href="/bikes">
-                  Browse Bikes
-                  <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="ghost" asChild className="text-warm-white/50 hover:text-warm-white hover:bg-warm-white/10">
-                <Link href="/sell">Sell Yours</Link>
-              </Button>
-            </div>
-          </div>
-
-          {/* Scroll indicator */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 opacity-40">
-            <span className="text-[10px] uppercase tracking-widest text-warm-white/50">Scroll</span>
-            <div className="w-px h-8 bg-linear-to-b from-warm-white/50 to-transparent" />
-          </div>
-        </section>
+        <HeroSection />
 
         {/* ═══════════════════════════════════════════════════════════
             2. WHAT ARE YOU RIDING FOR? — Opens with filter
