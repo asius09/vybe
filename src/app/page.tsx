@@ -51,9 +51,9 @@ function BikeCardGrid({ bike }: { bike: VYBEbike }) {
   );
 }
 
-export default function HomePage() {
-  const featured = getFeaturedBikes();
-  const newArrivals = getNewArrivals();
+export default async function HomePage() {
+  const featured = await getFeaturedBikes();
+  const newArrivals = await getNewArrivals();
   const displayBikes = [...newArrivals.filter((b) => !featured.find((f) => f.id === b.id)), ...featured];
   const row1 = displayBikes.slice(0, 3);
   const row2 = displayBikes.slice(3, 6);

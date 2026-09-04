@@ -7,23 +7,36 @@ import {
   getInventoryCounts,
   searchBikes,
   filterBikes,
-  getCategories,
-  getFeaturedBikes,
-  getNewArrivals,
   createBike,
   updateBike,
-  updateBikeStatus,
   deleteBike,
-} from "@/lib/inventory/repository";
+} from "@/lib/inventory/neon-repository";
 
 export type { Bike, Bike as VYBEbike, CreateBikeInput, UpdateBikeInput, InventoryStatus, BikeListResult } from "@/lib/inventory/types";
 export { formatPriceINR } from "@/lib/inventory/types";
 
-// Backward-compatible aliases
 export const getAvailableBikes = getPublicBikes;
 export const getBikeBySlug = getPublicBikeBySlug;
 
-// Re-export repository functions for server-side use
+export async function getCategories() {
+  const bikes = await getPublicBikes();
+  const cats = new Map<string, number>();
+  for (const b of bikes) {
+    cats.set(b.category, (cats.get(b.category) || 0) + 1);
+  }
+  return Array.from(cats.entries()).map(([name, count]) => ({ name, count }));
+}
+
+export async function getFeaturedBikes() {
+  const bikes = await getPublicBikes();
+  return bikes.filter((b) => b.featured);
+}
+
+export async function getNewArrivals() {
+  const bikes = await getPublicBikes();
+  return bikes.filter((b) => b.recentlyArrived);
+}
+
 export {
   getPublicBikes,
   getPublicBikeBySlug,
@@ -33,11 +46,7 @@ export {
   getInventoryCounts,
   searchBikes,
   filterBikes,
-  getCategories,
-  getFeaturedBikes,
-  getNewArrivals,
   createBike,
   updateBike,
-  updateBikeStatus,
   deleteBike,
 };

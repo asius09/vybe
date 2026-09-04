@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createBike } from "@/lib/inventory/repository";
+import { createBikesBulk } from "@/lib/inventory/neon-repository";
 import type { CreateBikeInput } from "@/lib/inventory/types";
 
 function parseCSVLine(line: string): string[] {
@@ -11,33 +11,17 @@ function parseCSVLine(line: string): string[] {
     const char = line[i];
     if (inQuotes) {
       if (char === '"') {
-        if (i + 1 < line.length && line[i + 1] === '"') {
-          current += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        current += char;
-      }
+        if (i + 1 < line.length && line[i + 1] === '"') { current += '"'; i++; }
+        else { inQuotes = false; }
+      } else { current += char; }
     } else {
-      if (char === '"') {
-        inQuotes = true;
-      } else if (char === ",") {
-        result.push(current.trim());
-        current = "";
-      } else {
-        current += char;
-      }
+      if (char === '"') { inQuotes = true; }
+      else if (char === ",") { result.push(current.trim()); current = ""; }
+      else { current += char; }
     }
   }
   result.push(current.trim());
   return result;
-}
-
-function parseCSV(text: string): string[][] {
-  const lines = text.split("\n").filter((l) => l.trim());
-  return lines.map(parseCSVLine);
 }
 
 function csvRowToBike(row: string[], headers: string[]): CreateBikeInput {
@@ -73,9 +57,7 @@ function csvRowToBike(row: string[], headers: string[]): CreateBikeInput {
     bestFor: get("bestFor") || "",
     description: get("description") || "",
     image: get("image") || "",
-    images: (() => {
-      try { return JSON.parse(get("images") || "[]"); } catch { return []; }
-    })(),
+    images: (() => { try { return JSON.parse(get("images") || "[]"); } catch { return []; } })(),
     inventoryStatus: (get("inventoryStatus") as CreateBikeInput["inventoryStatus"]) || "draft",
     featured: get("featured")?.toLowerCase() === "true",
     recentlyArrived: get("recentlyArrived")?.toLowerCase() === "true",
@@ -87,44 +69,34 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
-    if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
-    }
-
-    if (!file.name.endsWith(".csv")) {
-      return NextResponse.json({ error: "File must be a CSV" }, { status: 400 });
-    }
+    if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    if (!file.name.endsWith(".csv")) return NextResponse.json({ error: "File must be a CSV" }, { status: 400 });
 
     const text = await file.text();
-    const rows = parseCSV(text);
+    const lines = text.split("\n").filter((l) => l.trim());
+    if (lines.length < 2) return NextResponse.json({ error: "CSV must have a header row and at least one data row" }, { status: 400 });
 
-    if (rows.length < 2) {
-      return NextResponse.json({ error: "CSV must have a header row and at least one data row" }, { status: 400 });
+    const headers = lines[0].replace(/"/g, "").split(",").map((h) => h.trim());
+    const dataRows = lines.slice(1).map((line) => parseCSVLine(line));
+
+    const bikeInputs = dataRows
+      .map((row) => csvRowToBike(row, headers))
+      .filter((b) => b.name && b.name !== "Untitled Bike");
+
+    if (bikeInputs.length === 0) {
+      return NextResponse.json({ error: "No valid bikes found in CSV" }, { status: 400 });
     }
 
-    const headers = rows[0].map((h) => h.replace(/"/g, "").trim());
-    const dataRows = rows.slice(1);
+    const { bikes, errors } = await createBikesBulk(bikeInputs);
 
-    const results = { total: dataRows.length, success: 0, failed: 0, errors: [] as string[], bikes: [] as ReturnType<typeof createBike>[] };
-
-    for (let i = 0; i < dataRows.length; i++) {
-      try {
-        const bikeInput = csvRowToBike(dataRows[i], headers);
-        if (!bikeInput.name || bikeInput.name === "Untitled Bike") {
-          results.failed++;
-          results.errors.push(`Row ${i + 2}: Missing bike name`);
-          continue;
-        }
-        const bike = createBike(bikeInput);
-        results.bikes.push(bike);
-        results.success++;
-      } catch (e) {
-        results.failed++;
-        results.errors.push(`Row ${i + 2}: ${e instanceof Error ? e.message : "Unknown error"}`);
-      }
-    }
-
-    return NextResponse.json({ ok: true, ...results });
+    return NextResponse.json({
+      ok: true,
+      total: dataRows.length,
+      success: bikes.length,
+      failed: errors.length,
+      errors,
+      bikes,
+    });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : "Upload failed" }, { status: 500 });
   }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPublicBikes, filterBikes } from "@/lib/inventory/repository";
+import { getPublicBikes, filterBikes } from "@/lib/inventory/neon-repository";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const pageSize = searchParams.get("pageSize");
 
   if (category || search || condition || maxPrice || minPrice || page) {
-    const result = filterBikes({
+    const result = await filterBikes({
       category: category || undefined,
       search: search || undefined,
       condition: condition || undefined,
@@ -25,6 +25,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(result);
   }
 
-  const bikes = getPublicBikes();
+  const bikes = await getPublicBikes();
   return NextResponse.json({ bikes, total: bikes.length });
 }

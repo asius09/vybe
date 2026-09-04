@@ -23,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const bike = getBikeBySlug(id);
+  const bike = await getBikeBySlug(id);
   if (!bike) return { title: "Bike Not Found — VYBE" };
   return {
     title: `${bike.name} — VYBE Used E-Bikes`,
@@ -37,13 +37,13 @@ export default async function BikeDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const bike = getBikeBySlug(id);
+  const bike = await getBikeBySlug(id);
 
   if (!bike) {
     notFound();
   }
 
-  const relatedBikes = filterBikes({ category: bike.category })
+  const relatedBikes = (await filterBikes({ category: bike.category }))
     .bikes
     .filter((b) => b.slug !== bike.slug)
     .slice(0, 3);

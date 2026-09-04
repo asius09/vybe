@@ -1,7 +1,7 @@
 import { getAvailableBikes } from "@/data/loader";
 import { BikesClient } from "@/components/bikes/BikesClient";
 
-export default function BikesPage() {
-  const bikes = getAvailableBikes();
-  return <BikesClient initialBikes={bikes} />;
+export default async function BikesPage() {
+  const bikes = await getAvailableBikes();
+  return <BikesClient initialBikes={bikes as any} />;
 }

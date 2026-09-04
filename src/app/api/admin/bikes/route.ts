@@ -1,44 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllBikes, createBike, getBikesByPage, getInventoryCounts, searchBikes } from "@/lib/inventory/repository";
-import { validateCreateBike } from "@/lib/inventory/validation";
+import { getAllBikes, createBike, getBikesByPage, getInventoryCounts, searchBikes } from "@/lib/inventory/neon-repository";
 import type { CreateBikeInput, InventoryStatus } from "@/lib/inventory/types";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-
   const page = searchParams.get("page");
   const pageSize = searchParams.get("pageSize");
   const status = searchParams.get("status") as InventoryStatus | null;
   const search = searchParams.get("search");
 
   if (search) {
-    const bikes = searchBikes(search);
+    const bikes = await searchBikes(search);
     return NextResponse.json({ bikes, total: bikes.length });
   }
-
   if (page) {
-    const result = getBikesByPage(
-      Number(page),
-      Number(pageSize) || 10,
-      status || undefined
-    );
+    const result = await getBikesByPage(Number(page), Number(pageSize) || 10, status || undefined);
     return NextResponse.json(result);
   }
-
   if (status) {
-    const result = getBikesByPage(1, 100, status);
+    const result = await getBikesByPage(1, 100, status);
     return NextResponse.json({ bikes: result.bikes, total: result.total });
   }
 
-  const bikes = getAllBikes();
-  const counts = getInventoryCounts();
+  const bikes = await getAllBikes();
+  const counts = await getInventoryCounts();
   return NextResponse.json({ bikes, total: bikes.length, counts });
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-
     const input: CreateBikeInput = {
       slug: "",
       name: body.name || "",
@@ -72,12 +63,7 @@ export async function POST(request: NextRequest) {
       recentlyArrived: body.recentlyArrived || false,
     };
 
-    const errors = validateCreateBike(input);
-    if (errors.length > 0) {
-      return NextResponse.json({ error: "Validation failed", errors }, { status: 400 });
-    }
-
-    const bike = createBike(input);
+    const bike = await createBike(input);
     return NextResponse.json({ success: true, bike }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Failed to create bike" }, { status: 500 });
