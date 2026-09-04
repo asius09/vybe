@@ -5,7 +5,6 @@ import { Footer } from "@/components/layout/Footer";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getFeaturedBikes, getNewArrivals, formatPriceINR } from "@/data/loader";
 import type { VYBEbike } from "@/data/loader";
-import { BikeSvg } from "@/components/ui/bike-svg";
 import { ArrowRight } from "lucide-react";
 
 const rideCategories = [
@@ -113,9 +112,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Subtle SVG */}
-          <div className="absolute bottom-0 left-0 right-0 opacity-[0.03] pointer-events-none">
-            <BikeSvg className="w-full h-auto" color="#F5F3EA" />
+          {/* E-bike image as subtle background */}
+          <div className="absolute bottom-0 right-0 w-1/2 h-full opacity-[0.06] pointer-events-none overflow-hidden hidden md:block">
+            <img
+              src="https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              alt=""
+              className="w-full h-full object-cover object-center"
+            />
           </div>
         </section>
 

@@ -2,7 +2,6 @@
 
 import { useRef, useCallback } from "react";
 import Link from "next/link";
-import { BikeSvg } from "@/components/ui/bike-svg";
 
 export function Footer() {
   const maskRef = useRef<HTMLDivElement>(null);
@@ -65,11 +64,22 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ═══ FULL-WIDTH VYBE WORDMARK ═══ */}
+      {/* ═══ E-BIKE IMAGE BAND ═══ */}
+      <div className="relative h-48 md:h-64 overflow-hidden">
+        <img
+          src="https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=1400"
+          alt=""
+          className="w-full h-full object-cover opacity-15"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-asphalt via-transparent to-transparent" />
+      </div>
+
+      {/* ═══ VYBE WORDMARK — Very Bottom ═══ */}
       <div
         ref={maskRef}
         onPointerMove={handlePointerMove}
-        className="relative w-full overflow-hidden cursor-default select-none"
+        className="relative w-full overflow-hidden cursor-default select-none bg-asphalt"
         style={{
           "--mx": "50%",
           "--my": "50%",
@@ -77,11 +87,11 @@ export function Footer() {
         } as React.CSSProperties}
       >
         {/* Background text */}
-        <h2 className="font-heading text-[clamp(100px,22vw,320px)] font-extrabold leading-[0.85] text-warm-white/[0.04] tracking-tighter text-center px-4 py-4">
+        <h2 className="font-heading text-[clamp(80px,20vw,280px)] font-extrabold leading-[0.85] text-warm-white/[0.04] tracking-tighter text-center px-4 py-8">
           VYBE
         </h2>
 
-        {/* Spotlight reveal */}
+        {/* Spotlight reveal — bright text */}
         <div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
           style={{
@@ -89,17 +99,14 @@ export function Footer() {
             WebkitMaskImage: "radial-gradient(circle var(--spotlight-radius) at var(--mx) var(--my), black 0%, transparent 100%)",
           }}
         >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <BikeSvg className="w-56 md:w-80 h-auto opacity-20" color="#C8FF3D" />
-          </div>
-          <h2 className="font-heading text-[clamp(100px,22vw,320px)] font-extrabold leading-[0.85] text-warm-white tracking-tighter text-center px-4 py-4">
+          <h2 className="font-heading text-[clamp(80px,20vw,280px)] font-extrabold leading-[0.85] text-warm-white tracking-tighter text-center px-4 py-8">
             VYBE
           </h2>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="mx-auto max-w-6xl px-5 py-6 border-t border-warm-white/5">
+      <div className="mx-auto max-w-6xl px-5 py-5 border-t border-warm-white/5 bg-asphalt">
         <div className="flex flex-col items-center justify-between gap-3 text-[11px] text-warm-white/20 md:flex-row">
           <p>&copy; {new Date().getFullYear()} VYBE Bikes</p>
           <div className="flex items-center gap-3">

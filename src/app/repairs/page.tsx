@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { services } from "@/data/services";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
-import { BikeSvg } from "@/components/ui/bike-svg";
 
 export const metadata = {
   title: "Repair Services — VYBE Bikes",
@@ -76,10 +75,14 @@ export default function RepairsPage() {
                 </div>
               </div>
 
-              {/* Right — SVG illustration */}
+              {/* Right — E-bike image */}
               <div className="relative hidden md:flex items-center justify-center">
                 <div className="absolute -inset-20 bg-lime/5 blur-3xl rounded-full" />
-                <BikeSvg className="w-80 h-auto opacity-20" color="#C8FF3D" />
+                <img
+                  src="https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt=""
+                  className="w-80 h-auto rounded-2xl opacity-30 object-cover"
+                />
               </div>
             </div>
           </div>
@@ -184,8 +187,12 @@ export default function RepairsPage() {
         <section className="px-5 pb-16">
           <div className="mx-auto max-w-6xl">
             <div className="overflow-hidden rounded-2xl bg-asphalt p-10 text-center md:p-16 relative">
-              <div className="absolute inset-0 opacity-[0.04] pointer-events-none">
-                <BikeSvg className="w-full h-full" color="#F5F3EA" />
+              <div className="absolute inset-0 opacity-[0.05] pointer-events-none overflow-hidden">
+                <img
+                  src="https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h2 className="font-heading text-3xl font-bold text-warm-white md:text-4xl relative">
                 Ready to book?
