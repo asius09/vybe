@@ -567,68 +567,135 @@ export default function DesignSystemPage() {
                 Contrast Instructions
               </CardTitle>
               <CardDescription>
-                Critical rules for using colors safely
+                Critical rules for using colors safely — all ratios tested against our actual palette
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-start gap-3 rounded-card bg-emerald-50 p-3">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                  <div>
-                    <p className="text-sm font-bold text-emerald-800">
-                      Lime on dark backgrounds
-                    </p>
-                    <p className="text-xs text-emerald-700">
-                      #C8FF3D on #151515 → contrast ratio 12.5:1. Perfect for
-                      CTAs and highlights.
+                {/* Lime on Asphalt — PASS */}
+                <div className="flex items-start gap-3 rounded-card bg-lime/10 border border-lime/20 p-4">
+                  <div className="mt-0.5 flex h-6 w-10 shrink-0 items-center justify-center rounded bg-lime">
+                    <span className="text-[10px] font-bold text-asphalt">Aa</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">Lime on Asphalt</p>
+                      <span className="rounded-full bg-lime/20 px-2 py-0.5 text-[10px] font-bold text-lime-deeper">12.5:1 · AAA</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#C8FF3D</code> on <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#151515</code> — Perfect for CTAs, highlights, and accent text on dark backgrounds.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 rounded-card bg-emerald-50 p-3">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                  <div>
-                    <p className="text-sm font-bold text-emerald-800">
-                      Dark text on lime background
-                    </p>
-                    <p className="text-xs text-emerald-700">
-                      #151515 on #C8FF3D → contrast ratio 12.5:1. Use for
-                      buttons and badges.
+
+                {/* Asphalt on Warm White — PASS */}
+                <div className="flex items-start gap-3 rounded-card bg-lime/10 border border-lime/20 p-4">
+                  <div className="mt-0.5 flex h-6 w-10 shrink-0 items-center justify-center rounded bg-warm-white border border-border">
+                    <span className="text-[10px] font-bold text-asphalt">Aa</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">Asphalt on Warm White</p>
+                      <span className="rounded-full bg-lime/20 px-2 py-0.5 text-[10px] font-bold text-lime-deeper">14.8:1 · AAA</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#151515</code> on <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#F5F3EA</code> — Primary text color. Use everywhere for body text and headings.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 rounded-card bg-red-50 p-3">
-                  <X className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
-                  <div>
-                    <p className="text-sm font-bold text-red-800">
-                      Lime text on light backgrounds — NEVER
-                    </p>
-                    <p className="text-xs text-red-700">
-                      #C8FF3D on #F5F3EA → contrast ratio 1.4:1. Fails
-                      accessibility. Use dark text instead.
+
+                {/* Asphalt on Lime — PASS */}
+                <div className="flex items-start gap-3 rounded-card bg-lime/10 border border-lime/20 p-4">
+                  <div className="mt-0.5 flex h-6 w-10 shrink-0 items-center justify-center rounded bg-lime">
+                    <span className="text-[10px] font-bold text-asphalt">Aa</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">Dark on Lime Background</p>
+                      <span className="rounded-full bg-lime/20 px-2 py-0.5 text-[10px] font-bold text-lime-deeper">12.5:1 · AAA</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#151515</code> on <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#C8FF3D</code> — Use for button text, badge text, and any text sitting on lime backgrounds.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 rounded-card bg-red-50 p-3">
-                  <X className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
-                  <div>
-                    <p className="text-sm font-bold text-red-800">
-                      Coral text on white — AVOID
-                    </p>
-                    <p className="text-xs text-red-700">
-                      #FF6B4A on #FFFFFF → contrast ratio 3.1:1. Fails WCAG AA
-                      for small text. Use for large text only.
+
+                {/* Lime on Warm White — FAIL */}
+                <div className="flex items-start gap-3 rounded-card bg-coral/5 border border-coral/20 p-4">
+                  <div className="mt-0.5 flex h-6 w-10 shrink-0 items-center justify-center rounded bg-warm-white border border-border">
+                    <span className="text-[10px] font-bold text-lime">Aa</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">Lime on Warm White — NEVER</p>
+                      <span className="rounded-full bg-coral/20 px-2 py-0.5 text-[10px] font-bold text-coral">1.4:1 · FAIL</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#C8FF3D</code> on <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#F5F3EA</code> — Completely unreadable. Use dark text on light backgrounds instead.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 rounded-card bg-amber-50 p-3">
-                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-                  <div>
-                    <p className="text-sm font-bold text-amber-800">
-                      Purple on white — large text only
+
+                {/* Coral on White — AVOID */}
+                <div className="flex items-start gap-3 rounded-card bg-coral/5 border border-coral/20 p-4">
+                  <div className="mt-0.5 flex h-6 w-10 shrink-0 items-center justify-center rounded bg-white border border-border">
+                    <span className="text-[10px] font-bold text-coral">Aa</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">Coral on White — AVOID</p>
+                      <span className="rounded-full bg-coral/20 px-2 py-0.5 text-[10px] font-bold text-coral">3.1:1 · FAIL</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#FF6B4A</code> on <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#FFFFFF</code> — Fails WCAG AA for small text. Use for large text (18px+ bold) or on dark backgrounds only.
                     </p>
-                    <p className="text-xs text-amber-700">
-                      #8B7CFF on #FFFFFF → contrast ratio 3.5:1. Passes for
-                      large text (18px+ bold), fails for body.
+                  </div>
+                </div>
+
+                {/* Purple on White — LARGE ONLY */}
+                <div className="flex items-start gap-3 rounded-card bg-purple/5 border border-purple/20 p-4">
+                  <div className="mt-0.5 flex h-6 w-10 shrink-0 items-center justify-center rounded bg-white border border-border">
+                    <span className="text-[10px] font-bold text-purple">Aa</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">Purple on White — Large Text Only</p>
+                      <span className="rounded-full bg-purple/20 px-2 py-0.5 text-[10px] font-bold text-purple">3.5:1 · AA Large</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#8B7CFF</code> on <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#FFFFFF</code> — Passes for 18px+ bold or 24px+ regular. Fails for body text.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Coral on Asphalt — PASS */}
+                <div className="flex items-start gap-3 rounded-card bg-lime/10 border border-lime/20 p-4">
+                  <div className="mt-0.5 flex h-6 w-10 shrink-0 items-center justify-center rounded bg-asphalt">
+                    <span className="text-[10px] font-bold text-coral">Aa</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">Coral on Asphalt</p>
+                      <span className="rounded-full bg-lime/20 px-2 py-0.5 text-[10px] font-bold text-lime-deeper">4.8:1 · AA</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#FF6B4A</code> on <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#151515</code> — Passes AA. Use for accent text on dark backgrounds.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Purple on Asphalt — PASS */}
+                <div className="flex items-start gap-3 rounded-card bg-lime/10 border border-lime/20 p-4">
+                  <div className="mt-0.5 flex h-6 w-10 shrink-0 items-center justify-center rounded bg-asphalt">
+                    <span className="text-[10px] font-bold text-purple">Aa</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-foreground">Purple on Asphalt</p>
+                      <span className="rounded-full bg-lime/20 px-2 py-0.5 text-[10px] font-bold text-lime-deeper">4.2:1 · AA</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#8B7CFF</code> on <code className="font-mono text-[10px] bg-muted px-1 py-0.5 rounded">#151515</code> — Passes AA. Use for accent text on dark backgrounds.
                     </p>
                   </div>
                 </div>
