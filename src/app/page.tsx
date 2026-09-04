@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -24,13 +25,15 @@ function BikeCardGrid({ bike }: { bike: VYBEbike }) {
     <Link href={`/bikes/${bike.slug}`} className="group block">
       <div className="overflow-hidden rounded-card border border-border bg-white transition-all duration-300 group-hover:shadow-vybe-md group-hover:border-border/80">
         <div className="relative aspect-4/3 overflow-hidden bg-muted/30">
-          <img
+          <Image
             src={bike.image}
             alt={bike.name}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
           {bike.recentlyArrived && (
-            <div className="absolute left-3 top-3">
+            <div className="absolute left-3 top-3 z-10">
               <span className="rounded-full bg-foreground px-2 py-0.5 text-[10px] font-bold text-warm-white">New</span>
             </div>
           )}
@@ -61,7 +64,7 @@ export default function HomePage() {
 
       <main id="main-content">
         {/* ═══════════════════════════════════════════════════════════
-            1. HERO — Showcase Carousel + Trust Bar
+            1. HERO — Full-Bleed Showcase Carousel + Trust Bar
         ═══════════════════════════════════════════════════════════ */}
         <HeroSection />
 
@@ -86,13 +89,15 @@ export default function HomePage() {
                     href={`/bikes?category=${cat.slug}`}
                     className="group relative block aspect-4/3 overflow-hidden rounded-card"
                   >
-                    <img
+                    <Image
                       src={cat.image}
                       alt={cat.name}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-asphalt/60 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 p-5">
+                    <div className="absolute inset-0 bg-gradient-to-t from-asphalt/60 via-transparent to-transparent z-10" />
+                    <div className="absolute bottom-0 left-0 p-5 z-20">
                       <h3 className="font-heading text-lg font-bold text-warm-white">{cat.name}</h3>
                     </div>
                   </Link>

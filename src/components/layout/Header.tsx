@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu, X, ChevronDown, ArrowRight, Phone, Mail, ShoppingCart, User } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, Phone, ShoppingCart, User, MapPin } from "lucide-react";
+import { useLocation } from "@/hooks/use-location";
 
 const categories = [
   { name: "City", slug: "city", desc: "Smooth urban rides" },
@@ -18,28 +18,26 @@ const categories = [
 
 const needs = [
   { label: "Daily commute", href: "/bikes?category=city" },
-  { label: "Weekend rides", href: "/bikes?category=hybrid" },
-  { label: "Long range", href: "/bikes?category=commuter" },
+  { label: "Weekend trails", href: "/bikes?category=mountain" },
+  { label: "Family errands", href: "/bikes?category=cargo" },
   { label: "Compact storage", href: "/bikes?category=folding" },
 ];
 
 export function Header() {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-
-  const closeMega = useCallback(() => {
-    timeoutRef.current = setTimeout(() => setMegaOpen(false), 200);
-  }, []);
+  const megaRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const location = useLocation();
 
   const openMega = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setMegaOpen(true);
   }, []);
 
-  useEffect(() => {
-    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  const closeMega = useCallback(() => {
+    timeoutRef.current = setTimeout(() => setMegaOpen(false), 150);
   }, []);
 
   useEffect(() => {
@@ -47,12 +45,17 @@ export function Header() {
     setMegaOpen(false);
   }, [pathname]);
 
+  const locationText = location.city || location.country || "Your area";
+
   return (
     <header className="sticky top-0 z-50">
       {/* Announcement Bar */}
       <div className="bg-asphalt text-warm-white">
         <div className="mx-auto flex h-7 max-w-6xl items-center justify-center gap-4 px-5 text-[11px] font-medium tracking-wide">
-          <span className="text-warm-white/50">India</span>
+          <span className="flex items-center gap-1 text-warm-white/50">
+            <MapPin className="h-2.5 w-2.5" />
+            {locationText}
+          </span>
           <span className="text-warm-white/20">·</span>
           <span className="text-warm-white/50">Free test rides</span>
           <span className="text-warm-white/20">·</span>
@@ -112,17 +115,22 @@ export function Header() {
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-1.5">
+          <div className="hidden md:flex items-center gap-1">
             <Link
               href="/contact"
-              className="flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium text-foreground hover:bg-muted/60 transition-all duration-200"
+              className={cn(
+                "flex items-center gap-2 rounded-full px-3 py-1.5 text-sm transition-colors duration-200",
+                pathname === "/contact"
+                  ? "text-foreground bg-muted/50"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+              )}
             >
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-foreground text-background">
-                <User className="h-3 w-3" />
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground/10">
+                <User className="h-3 w-3 text-foreground" />
               </div>
-              <span>Login</span>
+              <span className="font-medium">Login</span>
             </Link>
-            <button className="flex h-9 w-9 items-center justify-center rounded-full text-foreground hover:bg-muted/60 transition-colors" aria-label="Shopping cart">
+            <button className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors" aria-label="Shopping cart">
               <ShoppingCart className="h-4 w-4" />
             </button>
           </div>
@@ -156,7 +164,7 @@ export function Header() {
       >
         <div className="mx-auto max-w-6xl px-5 py-8">
           <div className="grid grid-cols-12 gap-8">
-            {/* Categories — clean, no colored avatars */}
+            {/* Categories */}
             <div className="col-span-5">
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Categories</p>
               <div className="grid grid-cols-2 gap-1">
@@ -208,24 +216,22 @@ export function Header() {
                 <a href="tel:+919315405304" className="flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors">
                   <Phone className="h-3 w-3" /> +91 93154 05304
                 </a>
-                <a href="mailto:itsmeasius@gmail.com" className="flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors">
-                  <Mail className="h-3 w-3" /> Email us
-                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* ═══ MOBILE NAV ═══ */}
       <div
-        className={cn(
-          "border-t border-border/50 bg-background/90 backdrop-blur-2xl md:hidden transition-all duration-300 ease-out overflow-hidden",
-          mobileOpen ? "max-h-125 opacity-100" : "max-h-0 opacity-0"
-        )}
+        className="md:hidden overflow-hidden border-b border-border/50 bg-background/95 backdrop-blur-2xl"
+        style={{
+          maxHeight: mobileOpen ? "500px" : "0",
+          transition: "max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
       >
-        <div className="mx-auto max-w-6xl px-5 py-5">
-          <nav className="space-y-0.5" aria-label="Mobile navigation">
+        <div className="mx-auto max-w-6xl px-5 py-4">
+          <nav className="space-y-1" aria-label="Mobile navigation">
             <Link
               href="/bikes"
               className={cn(

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
@@ -11,9 +11,6 @@ import {
   CreditCard,
   MapPin,
   RotateCcw,
-  ArrowRight,
-  Zap,
-  Sparkles,
 } from "lucide-react";
 
 export interface HeroSlide {
@@ -21,17 +18,12 @@ export interface HeroSlide {
   name: string;
   category: string;
   headline: string;
-  highlightText: string;
   subtitle: string;
   price: string;
   originalPrice?: string;
   condition: string;
   image: string;
   slug: string;
-  tagPosition: {
-    top: string;
-    right: string;
-  };
 }
 
 const slides: HeroSlide[] = [
@@ -39,52 +31,37 @@ const slides: HeroSlide[] = [
     id: "mountain-pro",
     name: "VYBE Venture X-1 Pro",
     category: "Mountain E-Bike",
-    headline: "RIDE BEYOND",
-    highlightText: "BOUNDARIES",
-    subtitle: "Pursue the summit, triumph over any route with full suspension & 750W peak power.",
+    headline: "RIDE BEYOND BOUNDARIES",
+    subtitle: "Pursue the summit, triumph over any route.",
     price: "₹86,000",
     originalPrice: "₹1,24,000",
     condition: "98% Battery Health",
     image: "/images/hero/hero-mountain.jpg",
     slug: "vybe-summit-04",
-    tagPosition: {
-      top: "18%",
-      right: "16%",
-    },
   },
   {
     id: "commuter-gt",
     name: "VYBE Urban Commuter GT",
     category: "Commuter E-Bike",
-    headline: "ELEVATE YOUR",
-    highlightText: "DAILY COMMUTE",
-    subtitle: "Effortless urban cruising, 85 km range, and silent belt drive system.",
+    headline: "ELEVATE YOUR COMMUTE",
+    subtitle: "Effortless urban cruising with 85 km range.",
     price: "₹76,000",
     originalPrice: "₹1,09,000",
     condition: "32-Point Inspected",
     image: "/images/hero/hero-commuter.jpg",
     slug: "vybe-urban-06",
-    tagPosition: {
-      top: "20%",
-      right: "18%",
-    },
   },
   {
     id: "gravel-allroad",
     name: "VYBE Rise All-Road Gravel",
     category: "Gravel & All-Road",
-    headline: "SPEED MEETS",
-    highlightText: "ALL-TERRAIN",
-    subtitle: "Ultra-lightweight carbon frame engineered for swift gravel routes and asphalt sprints.",
+    headline: "SPEED MEETS ALL-TERRAIN",
+    subtitle: "Ultra-lightweight carbon frame for swift gravel & asphalt.",
     price: "₹87,000",
     originalPrice: "₹1,24,000",
     condition: "Like New · Serviced",
     image: "/images/hero/hero-gravel.jpg",
     slug: "vybe-cross-01",
-    tagPosition: {
-      top: "16%",
-      right: "20%",
-    },
   },
 ];
 
@@ -92,59 +69,51 @@ const trustFeatures = [
   {
     icon: ShieldCheck,
     title: "2-Year Warranty",
-    subtitle: "32-point inspection verified",
   },
   {
     icon: CreditCard,
     title: "Secure Payment",
-    subtitle: "100% encrypted & protected",
   },
   {
     icon: MapPin,
     title: "200+ Dealers",
-    subtitle: "Delhi NCR free test rides",
   },
   {
     icon: RotateCcw,
     title: "14-Day Returns",
-    subtitle: "30-day dedicated VYBE care",
   },
 ];
 
 export function HeroSection() {
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef(0);
 
   const nextSlide = useCallback(() => {
-    setDirection(1);
     setCurrent((prev) => (prev + 1) % slides.length);
   }, []);
 
   const prevSlide = useCallback(() => {
-    setDirection(-1);
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
   }, []);
 
-  // Auto-play interval
+  // Smooth auto-play
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
       nextSlide();
-    }, 7000);
+    }, 6000);
     return () => clearInterval(timer);
   }, [nextSlide, isPaused]);
 
-  // Touch swipe support
+  // Touch swipe
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const diff = touchStartX.current - touchEndX;
-    if (Math.abs(diff) > 50) {
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
       if (diff > 0) nextSlide();
       else prevSlide();
     }
@@ -155,229 +124,146 @@ export function HeroSection() {
   return (
     <section
       className="relative w-full overflow-hidden bg-asphalt select-none"
-      aria-label="Featured e-bikes showcase"
+      aria-label="Hero Section"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* ─── Hero Visual Stage ─── */}
-      <div className="relative min-h-[580px] sm:min-h-[640px] md:min-h-[720px] lg:min-h-[780px] w-full flex flex-col justify-between overflow-hidden">
+      <div className="relative w-full h-[calc(100vh-130px)] min-h-115 max-h-165 flex items-center justify-center overflow-hidden">
         
-        {/* Ambient Studio Lighting Glows */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Subtle warm center radial spotlight */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(200,255,61,0.07)_0%,rgba(255,107,74,0.03)_35%,rgba(21,21,21,0.85)_70%,#151515_100%)]" />
-          
-          {/* Atmospheric background grid hints */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 1px, transparent 0)`,
-              backgroundSize: "32px 32px",
-            }}
-          />
-
-          {/* Top subtle vignette */}
-          <div className="absolute top-0 left-0 right-0 h-32 bg-linear-to-b from-asphalt via-asphalt/60 to-transparent z-10" />
-          {/* Bottom subtle blend */}
-          <div className="absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-asphalt via-asphalt/80 to-transparent z-10" />
-        </div>
-
-        {/* ─── Centerpiece Bike Showcase ─── */}
-        <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 pt-8 md:pt-12 flex-1 flex items-center justify-center">
-          <div className="relative w-full max-w-4xl aspect-16/10 sm:aspect-16/9 flex items-center justify-center">
-            
-            <AnimatePresence initial={false} custom={direction} mode="wait">
-              <motion.div
-                key={activeSlide.id}
-                custom={direction}
-                initial={{ opacity: 0, scale: 0.94, x: direction * 40 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 1.05, x: direction * -40 }}
-                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <img
-                  src={activeSlide.image}
-                  alt={activeSlide.name}
-                  className="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
-                  loading="eager"
-                  decoding="async"
-                />
-
-                {/* Floating Speech-Bubble Price Tag */}
-                <motion.div
-                  initial={{ opacity: 0, y: 15, scale: 0.85 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ delay: 0.25, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    top: activeSlide.tagPosition.top,
-                    right: activeSlide.tagPosition.right,
-                  }}
-                  className="absolute z-20 hidden sm:block"
-                >
-                  <Link
-                    href={`/bikes/${activeSlide.slug}`}
-                    className="group/tag relative flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 md:px-4 md:py-2 text-asphalt shadow-[0_10px_25px_rgba(0,0,0,0.35)] transition-all duration-300 hover:scale-105 hover:shadow-vybe-lime border border-white/60"
-                  >
-                    <div className="flex flex-col items-start leading-tight">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-heading text-base md:text-lg font-extrabold text-asphalt">
-                          {activeSlide.price}
-                        </span>
-                        {activeSlide.originalPrice && (
-                          <span className="text-[11px] text-muted-foreground line-through font-medium">
-                            {activeSlide.originalPrice}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
-                        {activeSlide.condition}
-                      </span>
-                    </div>
-
-                    {/* Speech bubble tail pointer */}
-                    <div className="absolute -bottom-1.5 left-4 w-3 h-3 bg-white rotate-45 border-r border-b border-neutral-200/40" />
-                  </Link>
-                </motion.div>
-              </motion.div>
-            </AnimatePresence>
-
-          </div>
-        </div>
-
-        {/* ─── Centered Overlaid Content (Title, Subtitle, CTA) ─── */}
-        <div className="relative z-20 mx-auto w-full max-w-4xl px-4 text-center pb-8 sm:pb-12 md:pb-14">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeSlide.id}
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -18 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-3 sm:space-y-4"
+        {slides.map((slide, idx) => {
+          const isActive = idx === current;
+          return (
+            <div
+              key={slide.id}
+              className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                isActive
+                  ? "opacity-100 scale-100 pointer-events-auto z-10"
+                  : "opacity-0 scale-105 pointer-events-none z-0"
+              }`}
             >
-              {/* Category pill indicator */}
-              <div className="flex justify-center">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-warm-white/70 backdrop-blur-md border border-white/10">
-                  <Zap className="h-3 w-3 text-lime" />
-                  {activeSlide.category}
-                </span>
-              </div>
-
-              {/* Main Headline */}
-              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-warm-white uppercase leading-[1.05] drop-shadow-md">
-                {activeSlide.headline}{" "}
-                <span className="text-lime">{activeSlide.highlightText}</span>
-              </h1>
-
-              {/* Subtitle */}
-              <p className="mx-auto max-w-xl text-sm sm:text-base text-warm-white/70 leading-relaxed font-body">
-                {activeSlide.subtitle}
-              </p>
-
-              {/* CTA Action Buttons */}
-              <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-                <Button
-                  size="lg"
-                  className="rounded-full bg-lime text-asphalt hover:bg-lime-dark font-heading font-extrabold tracking-wide uppercase px-8 py-6 shadow-vybe-lime transition-all duration-300 hover:scale-105 active:scale-95 text-xs sm:text-sm"
-                  asChild
-                >
-                  <Link href={`/bikes/${activeSlide.slug}`}>
-                    Shop Now
-                    <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </Button>
-
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="rounded-full border-white/20 bg-white/5 text-warm-white hover:bg-white/15 hover:text-warm-white hover:border-white/40 font-heading font-bold text-xs sm:text-sm px-6 py-6 backdrop-blur-md transition-all duration-300 active:scale-95"
-                  asChild
-                >
-                  <Link href="/bikes">
-                    Browse All ({slides.length * 8}+)
-                  </Link>
-                </Button>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* ─── Navigation Controls (Circular Arrows + Slide Dots) ─── */}
-        <div className="absolute left-4 sm:left-8 bottom-6 md:bottom-12 z-25 flex items-center gap-3">
-          {/* Left / Right Arrow Buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={prevSlide}
-              aria-label="Previous slide"
-              className="group flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-warm-white border border-white/15 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95"
-            >
-              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-            </button>
-            <button
-              onClick={nextSlide}
-              aria-label="Next slide"
-              className="group flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-warm-white border border-white/15 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95"
-            >
-              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </button>
-          </div>
-
-          {/* Slide Indicators */}
-          <div className="hidden sm:flex items-center gap-1.5 ml-2">
-            {slides.map((slide, idx) => (
-              <button
-                key={slide.id}
-                onClick={() => {
-                  setDirection(idx > current ? 1 : -1);
-                  setCurrent(idx);
-                }}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  current === idx
-                    ? "w-7 bg-lime"
-                    : "w-2 bg-white/25 hover:bg-white/50"
-                }`}
+              <Image
+                src={slide.image}
+                alt={slide.name}
+                fill
+                priority={idx === 0}
+                sizes="100vw"
+                className="object-cover object-center transition-transform duration-1000 ease-out"
               />
-            ))}
+
+              {/* Ambient atmospheric gradients */}
+              <div className="absolute inset-0 bg-linear-to-t from-asphalt via-asphalt/25 to-asphalt/35" />
+              <div className="absolute inset-0 bg-linear-to-b from-asphalt/50 via-transparent to-asphalt/85" />
+            </div>
+          );
+        })}
+
+        {/* ─── Authentic Retail Price Tag (Static, No Blink, Shifted Right) ─── */}
+        <div className="absolute top-[18%] sm:top-[20%] md:top-[22%] right-5 sm:right-10 md:right-16 lg:right-20 z-20">
+          <Link
+            href={`/bikes/${activeSlide.slug}`}
+            className="flex items-center rounded-lg bg-warm-white text-asphalt shadow-vybe-md border border-neutral-300 overflow-hidden"
+          >
+            {/* Tag Eyelet Notch Area */}
+            <div className="flex items-center justify-center bg-muted/60 px-2.5 py-3 border-r border-border/80">
+              <div className="w-2.5 h-2.5 rounded-full bg-asphalt/80 border border-warm-white" />
+            </div>
+            {/* Tag Body */}
+            <div className="px-3.5 py-2 flex flex-col justify-center leading-none">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-0.5">
+                VYBE PRICE
+              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-heading text-base sm:text-lg font-extrabold text-foreground tracking-tight">
+                  {activeSlide.price}
+                </span>
+                {activeSlide.originalPrice && (
+                  <span className="text-[10px] sm:text-xs text-muted-foreground line-through font-medium">
+                    {activeSlide.originalPrice}
+                  </span>
+                )}
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* ─── Overlaid Centered Headline & Action ─── */}
+        <div className="absolute bottom-5 sm:bottom-7 md:bottom-9 inset-x-0 z-30 flex flex-col items-center text-center px-4">
+          <div className="flex flex-col items-center transition-all duration-500">
+            {/* Headline with single-line guarantee */}
+            <h1 className="font-heading text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-warm-white uppercase leading-none drop-shadow-md whitespace-nowrap">
+              {activeSlide.headline}
+            </h1>
+
+            {/* Subtitle */}
+            <p className="mt-2 text-xs sm:text-sm text-warm-white/75 max-w-md font-body leading-tight drop-shadow-xs">
+              {activeSlide.subtitle}
+            </p>
+
+            {/* Pill CTA Button */}
+            <div className="mt-4">
+              <Button
+                size="sm"
+                className="rounded-full bg-asphalt hover:bg-black text-warm-white border border-white/30 font-heading font-extrabold text-xs tracking-widest uppercase px-8 sm:px-10 py-2.5 shadow-vybe-md transition-all duration-300 hover:scale-105 active:scale-95 hover:border-lime hover:text-lime"
+                asChild
+              >
+                <Link href={`/bikes/${activeSlide.slug}`}>
+                  Shop Now
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Slide Counter on Right */}
-        <div className="absolute right-4 sm:right-8 bottom-6 md:bottom-12 z-25 hidden sm:flex items-center gap-1 text-xs font-mono font-bold text-warm-white/40">
-          <span className="text-lime">0{current + 1}</span>
-          <span>/</span>
-          <span>0{slides.length}</span>
+        {/* ─── Bottom-Left Slider Arrows ─── */}
+        <div className="absolute left-4 sm:left-8 bottom-5 sm:bottom-7 z-30 flex items-center gap-2">
+          <button
+            onClick={prevSlide}
+            aria-label="Previous slide"
+            className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-asphalt/80 hover:bg-asphalt text-warm-white/80 hover:text-warm-white border border-white/20 backdrop-blur-xs transition-all duration-200 active:scale-90 hover:border-lime"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            onClick={nextSlide}
+            aria-label="Next slide"
+            className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-asphalt/80 hover:bg-asphalt text-warm-white/80 hover:text-warm-white border border-white/20 backdrop-blur-xs transition-all duration-200 active:scale-90 hover:border-lime"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Slide Indicator Dots */}
+        <div className="absolute right-4 sm:right-8 bottom-5 sm:bottom-7 z-30 flex items-center gap-1.5">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrent(idx)}
+              aria-label={`Slide ${idx + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                current === idx ? "w-6 bg-lime" : "w-1.5 bg-white/25 hover:bg-white/50"
+              }`}
+            />
+          ))}
         </div>
 
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════
-          TRUST / GUARANTEE BAR (Directly below Hero)
-      ═══════════════════════════════════════════════════════════ */}
-      <div className="w-full border-t border-border/80 bg-warm-white py-5 sm:py-6 shadow-xs">
-        <div className="mx-auto max-w-6xl px-5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 md:divide-x md:divide-border">
+      <div className="w-full border-t border-border/70 bg-warm-white py-3.5 sm:py-4">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-0 md:divide-x md:divide-border/60">
             {trustFeatures.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.title}
-                  className="flex items-center gap-3 px-2 md:px-6 py-1"
+                  className="flex items-center justify-center gap-2.5 px-3 py-1"
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-asphalt text-lime shadow-xs">
-                    <Icon className="h-4 w-4" strokeWidth={2} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-heading text-xs sm:text-sm font-bold text-foreground truncate">
-                      {item.title}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground truncate">
-                      {item.subtitle}
-                    </p>
-                  </div>
+                  <Icon className="h-4 w-4 text-coral shrink-0" strokeWidth={2} />
+                  <span className="font-heading text-xs sm:text-sm font-bold text-foreground whitespace-nowrap">
+                    {item.title}
+                  </span>
                 </div>
               );
             })}
