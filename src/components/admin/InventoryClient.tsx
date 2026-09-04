@@ -98,6 +98,20 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
   const [csvUploading, setCSVUploading] = useState(false);
   const [csvResult, setCSVResult] = useState<{ success: number; failed: number; errors: string[] } | null>(null);
   const [csvDragging, setCSVDragging] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+
+  const handlePublishAll = useCallback(async () => {
+    setPublishing(true);
+    try {
+      const res = await fetch("/api/admin/bikes/publish", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        setBikes((prev) => prev.map((b) => b.inventoryStatus === "draft" ? { ...b, inventoryStatus: "live" as InventoryStatus } : b));
+        setSaveMsg(`Published ${data.published} bike${data.published !== 1 ? "s" : ""}`);
+        setTimeout(() => setSaveMsg(null), 3000);
+      }
+    } finally { setPublishing(false); }
+  }, []);
 
   const saveDraft = useCallback((f: typeof form) => {
     try {
@@ -358,7 +372,7 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
         </div>
 
         {/* Filters */}
-        <div className="mb-4 flex flex-wrap gap-2">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
           {(["all", ...statusCycle] as const).map((s) => (
             <button key={s} onClick={() => { setFilterStatus(s); setPage(1); }}
               className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${filterStatus === s ? "bg-foreground text-warm-white" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
@@ -366,6 +380,12 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
               <span className="ml-1 opacity-60">{statusCounts[s]}</span>
             </button>
           ))}
+          {statusCounts.draft > 0 && (
+            <Button size="sm" variant="outline" onClick={handlePublishAll} disabled={publishing}
+              className="ml-auto border-lime/30 text-lime hover:bg-lime/10 text-xs font-semibold">
+              {publishing ? "Publishing..." : `Publish All (${statusCounts.draft})`}
+            </Button>
+          )}
         </div>
 
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -415,7 +435,7 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
                     <td className="px-4 py-3"><Badge variant={config.variant}>{config.label}</Badge></td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
-                        {nextStatus && <Button size="sm" variant="ghost" onClick={() => advanceStatus(bike)} disabled={updating === bike.id} className="h-7 px-2 text-[10px]">{statusConfig[nextStatus].label} →</Button>}
+                        {nextStatus && <Button size="sm" variant={bike.inventoryStatus === "draft" ? "default" : "ghost"} onClick={() => advanceStatus(bike)} disabled={updating === bike.id} className={`h-7 px-2 text-[10px] ${bike.inventoryStatus === "draft" ? "bg-lime text-asphalt hover:bg-lime/90 font-semibold" : ""}`}>{bike.inventoryStatus === "draft" ? "Publish" : `${statusConfig[nextStatus].label} →`}</Button>}
                         <button onClick={() => openEdit(bike)} className="rounded p-1.5 hover:bg-muted transition-colors"><Pencil className="h-3.5 w-3.5 text-muted-foreground" /></button>
                         <button onClick={() => setDeleteBike(bike)} className="rounded p-1.5 hover:bg-coral/10 transition-colors"><Trash2 className="h-3.5 w-3.5 text-coral" /></button>
                       </div>
@@ -449,7 +469,7 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
                     <div className="mt-2 flex items-center justify-between">
                       <p className="font-heading text-base font-extrabold">{formatPriceINR(bike.price)}</p>
                       <div className="flex gap-1">
-                        {nextStatus && <Button size="sm" variant="ghost" onClick={() => advanceStatus(bike)} disabled={updating === bike.id} className="h-6 px-2 text-[10px]">{statusConfig[nextStatus].label} →</Button>}
+                        {nextStatus && <Button size="sm" variant={bike.inventoryStatus === "draft" ? "default" : "ghost"} onClick={() => advanceStatus(bike)} disabled={updating === bike.id} className={`h-6 px-2 text-[10px] ${bike.inventoryStatus === "draft" ? "bg-lime text-asphalt hover:bg-lime/90 font-semibold" : ""}`}>{bike.inventoryStatus === "draft" ? "Publish" : `${statusConfig[nextStatus].label} →`}</Button>}
                         <button onClick={() => openEdit(bike)} className="rounded p-1 hover:bg-muted"><Pencil className="h-3 w-3 text-muted-foreground" /></button>
                         <button onClick={() => setDeleteBike(bike)} className="rounded p-1 hover:bg-coral/10"><Trash2 className="h-3 w-3 text-coral" /></button>
                       </div>
