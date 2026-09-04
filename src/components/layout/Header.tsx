@@ -142,13 +142,19 @@ export function Header() {
       {/* ═══ FULL-WIDTH MEGA MENU ═══ */}
       <div
         className={cn(
-          "absolute left-0 right-0 top-full border-b border-border bg-white/95 backdrop-blur-xl shadow-vybe-lg transition-all duration-500 ease-out",
+          "absolute left-0 right-0 top-full border-b border-border bg-white/95 backdrop-blur-xl",
           megaOpen
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-2 pointer-events-none"
+            ? "pointer-events-auto"
+            : "pointer-events-none"
         )}
         onMouseEnter={openMega}
         onMouseLeave={closeMega}
+        style={{
+          clipPath: megaOpen
+            ? "polygon(0 0, 100% 0, 100% 100%, 0 100%)"
+            : "polygon(45% 0, 55% 0, 55% 0, 45% 0)",
+          transition: "clip-path 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
       >
         <div className="mx-auto max-w-6xl px-5 py-8">
           <div className="grid grid-cols-12 gap-8">
@@ -156,11 +162,16 @@ export function Header() {
             <div className="col-span-5">
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Categories</p>
               <div className="grid grid-cols-2 gap-2">
-                {categories.map((cat) => (
+                {categories.map((cat, i) => (
                   <Link
                     key={cat.slug}
                     href={`/bikes?category=${cat.slug}`}
-                    className="group flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-muted/50 transition-colors"
+                    className="group flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-muted/50 transition-all duration-300"
+                    style={{
+                      opacity: megaOpen ? 1 : 0,
+                      transform: megaOpen ? "translateY(0)" : "translateY(8px)",
+                      transition: `opacity 0.4s ease ${i * 0.05}s, transform 0.4s ease ${i * 0.05}s`,
+                    }}
                   >
                     <span className={cn("h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold", cat.color)}>
                       {cat.name[0]}

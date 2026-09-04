@@ -1,117 +1,207 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { ServiceCard } from "@/components/services/ServiceCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { services } from "@/data/services";
 import Link from "next/link";
-import { ArrowRight, Shield, Clock, Wrench } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+import { BikeSvg } from "@/components/ui/bike-svg";
 
 export const metadata = {
   title: "Repair Services — VYBE Bikes",
   description: "Professional e-bike repair and maintenance. From quick fixes to full overhauls.",
 };
 
+const categoryLabels = {
+  essential: { label: "Essential", color: "text-lime-deeper" },
+  maintenance: { label: "Maintenance", color: "text-coral" },
+  repair: { label: "Repair", color: "text-purple" },
+  diagnostic: { label: "Diagnostic", color: "text-muted-foreground" },
+};
+
 export default function RepairsPage() {
+  const essential = services.filter((s) => s.category === "essential");
+  const maintenance = services.filter((s) => s.category === "maintenance");
+  const repair = services.filter((s) => s.category === "repair");
+  const diagnostic = services.filter((s) => s.category === "diagnostic");
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main>
-        {/* Hero */}
-        <section className="px-5 py-16 md:py-24">
-          <div className="mx-auto max-w-6xl space-y-6">
-            <Badge variant="outline" className="w-fit">Repair Services</Badge>
-            <h1 className="font-heading text-4xl font-bold text-foreground md:text-6xl">
-              Expert E-Bike
-              <br />
-              <span className="text-lime-deeper">Repairs</span>
-            </h1>
-            <p className="max-w-lg text-lg text-muted-foreground">
-              From quick safety checks to full overhauls. Our in-house team
-              services all e-bike brands and models.
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" asChild>
-                <Link href="/contact">
-                  Book a Service
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+      <main id="main-content">
+        {/* ═══ HERO ═══ */}
+        <section className="relative overflow-hidden bg-asphalt">
+          <div className="mx-auto max-w-6xl px-5 py-16 md:py-24">
+            <div className="grid gap-10 md:grid-cols-2 md:items-center">
+              <div className="space-y-6">
+                <Badge variant="lime" className="w-fit">Repair Services</Badge>
+                <h1 className="font-heading text-4xl font-bold text-warm-white md:text-5xl lg:text-6xl">
+                  Expert e-bike
+                  <br />
+                  <span className="text-lime">repairs.</span>
+                </h1>
+                <p className="max-w-md text-lg text-warm-white/50 leading-relaxed">
+                  From quick safety checks to full overhauls. Our in-house team
+                  services all e-bike brands and models.
+                </p>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button size="lg" className="bg-lime text-asphalt hover:bg-lime-dark font-bold" asChild>
+                    <Link href="/contact">
+                      Book a Service
+                      <ArrowRight className="h-4 w-4 ml-1" />
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
+                    <a href="tel:+919315405304">Call Now</a>
+                  </Button>
+                </div>
+
+                {/* Trust stats */}
+                <div className="flex gap-6 pt-4">
+                  <div>
+                    <p className="font-heading text-2xl font-extrabold text-lime">32</p>
+                    <p className="text-[11px] text-warm-white/40">Point check</p>
+                  </div>
+                  <div className="w-px bg-warm-white/10" />
+                  <div>
+                    <p className="font-heading text-2xl font-extrabold text-warm-white">1-3</p>
+                    <p className="text-[11px] text-warm-white/40">Day turnaround</p>
+                  </div>
+                  <div className="wpx bg-warm-white/10" />
+                  <div>
+                    <p className="font-heading text-2xl font-extrabold text-warm-white">All</p>
+                    <p className="text-[11px] text-warm-white/40">Brands</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right — SVG illustration */}
+              <div className="relative hidden md:flex items-center justify-center">
+                <div className="absolute -inset-20 bg-lime/5 blur-3xl rounded-full" />
+                <BikeSvg className="w-80 h-auto opacity-20" color="#C8FF3D" />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Trust Badges */}
-        <section className="border-y border-border bg-muted/30 px-5 py-8">
+        {/* ═══ INCLUDED WITH PURCHASE ═══ */}
+        <section className="border-y border-border bg-lime/5 px-5 py-12">
           <div className="mx-auto max-w-6xl">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime/20">
-                  <Shield className="h-5 w-5 text-lime-deeper" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground">Certified Mechanics</p>
-                  <p className="text-xs text-muted-foreground">Trained on all major e-bike systems</p>
-                </div>
+            <div className="flex flex-col items-center gap-6 md:flex-row md:items-start md:gap-12">
+              <div className="shrink-0">
+                <Badge variant="lime">Included</Badge>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-coral/10">
-                  <Clock className="h-5 w-5 text-coral" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground">Fast Turnaround</p>
-                  <p className="text-xs text-muted-foreground">Most services completed in 1-3 days</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple/10">
-                  <Wrench className="h-5 w-5 text-purple" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground">All Brands</p>
-                  <p className="text-xs text-muted-foreground">We service Rad, Trek, Specialized, and more</p>
-                </div>
+              <div className="grid gap-6 md:grid-cols-3 flex-1">
+                {[
+                  { title: "32-Point Inspection", desc: "Every VYBE bike passes our comprehensive safety check before sale." },
+                  { title: "Battery Certified", desc: "Full health diagnostic with capacity test and cell balance check." },
+                  { title: "30-Day Support", desc: "Free check-up within 30 days. We make sure everything runs perfectly." },
+                ].map((item) => (
+                  <div key={item.title} className="flex items-start gap-3">
+                    <div className="mt-0.5 h-5 w-5 rounded-full bg-lime flex items-center justify-center shrink-0">
+                      <Check className="h-3 w-3 text-asphalt" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">{item.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* Services Grid */}
-        <section className="px-5 py-16">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <div>
-              <h2 className="font-heading text-3xl font-bold text-foreground">
-                Our Services
+        {/* ═══ SERVICES ═══ */}
+        <section className="px-5 py-16 md:py-24">
+          <div className="mx-auto max-w-6xl space-y-16">
+            {/* Section header */}
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Our Services</p>
+              <h2 className="font-heading text-3xl font-bold text-foreground md:text-4xl">
+                Transparent pricing.
+                <br />
+                No hidden fees.
               </h2>
-              <p className="mt-2 text-muted-foreground">
-                Transparent pricing. No hidden fees.
-              </p>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {services.map((service) => (
-                <ServiceCard key={service.id} service={service} />
-              ))}
+
+            {/* Essential */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <h3 className="font-heading text-lg font-bold text-foreground">Essential</h3>
+                <span className="h-px flex-1 bg-border" />
+              </div>
+              <div className="grid gap-5 md:grid-cols-2">
+                {essential.map((service) => (
+                  <ServiceCard key={service.id} service={service} />
+                ))}
+              </div>
+            </div>
+
+            {/* Maintenance */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <h3 className="font-heading text-lg font-bold text-foreground">Maintenance</h3>
+                <span className="h-px flex-1 bg-border" />
+              </div>
+              <div className="grid gap-5 md:grid-cols-2">
+                {maintenance.map((service) => (
+                  <ServiceCard key={service.id} service={service} />
+                ))}
+              </div>
+            </div>
+
+            {/* Repair */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <h3 className="font-heading text-lg font-bold text-foreground">Repair</h3>
+                <span className="h-px flex-1 bg-border" />
+              </div>
+              <div className="grid gap-5 md:grid-cols-2">
+                {repair.map((service) => (
+                  <ServiceCard key={service.id} service={service} />
+                ))}
+              </div>
+            </div>
+
+            {/* Diagnostic */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <h3 className="font-heading text-lg font-bold text-foreground">Diagnostic</h3>
+                <span className="h-px flex-1 bg-border" />
+              </div>
+              <div className="grid gap-5 md:grid-cols-2">
+                {diagnostic.map((service) => (
+                  <ServiceCard key={service.id} service={service} />
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* CTA */}
+        {/* ═══ CTA ═══ */}
         <section className="px-5 pb-16">
           <div className="mx-auto max-w-6xl">
-            <div className="overflow-hidden rounded-card bg-asphalt p-10 text-center md:p-16">
-              <h2 className="font-heading text-3xl font-bold text-lime md:text-4xl">
+            <div className="overflow-hidden rounded-2xl bg-asphalt p-10 text-center md:p-16 relative">
+              <div className="absolute inset-0 opacity-[0.04] pointer-events-none">
+                <BikeSvg className="w-full h-full" color="#F5F3EA" />
+              </div>
+              <h2 className="font-heading text-3xl font-bold text-warm-white md:text-4xl relative">
                 Ready to book?
               </h2>
-              <p className="mx-auto mt-4 max-w-md text-warm-white/60">
+              <p className="mx-auto mt-4 max-w-md text-warm-white/50 relative">
                 Contact us to schedule your service. Walk-ins welcome, appointments preferred.
               </p>
-              <div className="mt-8">
-                <Button size="lg" asChild className="bg-lime text-asphalt hover:bg-lime-dark">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row justify-center relative">
+                <Button size="lg" className="bg-lime text-asphalt hover:bg-lime-dark font-bold" asChild>
                   <Link href="/contact">
                     Book a Service
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-4 w-4 ml-1" />
                   </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
+                  <a href="tel:+919315405304">Call +91 93154 05304</a>
                 </Button>
               </div>
             </div>
@@ -120,6 +210,48 @@ export default function RepairsPage() {
       </main>
 
       <Footer />
+    </div>
+  );
+}
+
+function ServiceCard({ service }: { service: typeof services[number] }) {
+  const cat = categoryLabels[service.category];
+  return (
+    <div className="group rounded-2xl border border-border bg-white p-6 transition-all duration-300 hover:border-lime/40 hover:shadow-vybe-md">
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${cat.color}`}>{cat.label}</p>
+          <h4 className="font-heading text-base font-bold text-foreground">{service.name}</h4>
+        </div>
+        {service.popular && (
+          <Badge variant="lime" className="text-[10px]">Popular</Badge>
+        )}
+      </div>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{service.description}</p>
+
+      {/* Steps */}
+      <div className="space-y-1.5 mb-4">
+        {service.steps.slice(0, 4).map((step) => (
+          <div key={step} className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Check className="h-3 w-3 text-lime-deeper shrink-0" />
+            {step}
+          </div>
+        ))}
+        {service.steps.length > 4 && (
+          <p className="text-[10px] text-muted-foreground/60 ml-5">+{service.steps.length - 4} more</p>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between border-t border-border pt-4">
+        <div>
+          <p className="font-heading text-lg font-extrabold">₹{service.startingPrice}</p>
+          <p className="text-[10px] text-muted-foreground">Starting price</p>
+        </div>
+        <div className="text-right">
+          <p className="text-xs font-semibold text-foreground">{service.duration}</p>
+          <p className="text-[10px] text-muted-foreground">Typical time</p>
+        </div>
+      </div>
     </div>
   );
 }

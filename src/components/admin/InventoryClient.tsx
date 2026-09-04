@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatPriceINR, type VYBEbike, type InventoryStatus } from "@/data/types";
 import {
   ArrowLeft, Search, ChevronRight, RefreshCw, Plus, Pencil, Trash2,
-  ChevronLeft, X, Check,
+  ChevronLeft, X, Check, FileText,
 } from "lucide-react";
 
 const statusConfig: Record<InventoryStatus, { label: string; variant: "lime" | "coral" | "purple" | "dark" | "outline" }> = {
@@ -70,6 +70,33 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [draftSaved, setDraftSaved] = useState(false);
+
+  // Auto-save draft to localStorage
+  const saveDraft = useCallback((f: typeof form) => {
+    try {
+      localStorage.setItem("vybe-bike-draft", JSON.stringify(f));
+      setDraftSaved(true);
+      setTimeout(() => setDraftSaved(false), 1500);
+    } catch {}
+  }, []);
+
+  // Load draft from localStorage
+  const loadDraft = useCallback(() => {
+    try {
+      const saved = localStorage.getItem("vybe-bike-draft");
+      if (saved) {
+        setForm(JSON.parse(saved));
+        return true;
+      }
+    } catch {}
+    return false;
+  }, []);
+
+  // Clear draft
+  const clearDraft = useCallback(() => {
+    localStorage.removeItem("vybe-bike-draft");
+  }, []);
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = { all: bikes.length };
@@ -190,7 +217,12 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
     }
   };
 
-  const openAdd = () => { setForm(emptyForm()); setFormErrors({}); setSaveMsg(null); setShowForm("add"); setEditBike(null); };
+  const openAdd = () => {
+    const empty = emptyForm();
+    const hasDraft = loadDraft();
+    if (!hasDraft) setForm(empty);
+    setFormErrors({}); setSaveMsg(null); setShowForm("add"); setEditBike(null);
+  };
   const openEdit = (bike: VYBEbike) => {
     setForm({
       name: bike.name, category: bike.category, price: String(bike.price),
@@ -227,6 +259,11 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
             <p className="mt-2 text-muted-foreground">Manage your bike stock</p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/admin/cms">
+                <FileText className="h-4 w-4" /> CMS
+              </Link>
+            </Button>
             <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
               <RefreshCw className="h-4 w-4" /> Refresh
             </Button>

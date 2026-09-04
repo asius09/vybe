@@ -557,7 +557,12 @@ export default function HomePage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            10. CTA
+            10. FAQs — Design & Process
+        ═══════════════════════════════════════════════════════════ */}
+        <FAQsSection />
+
+        {/* ═══════════════════════════════════════════════════════════
+            11. CTA
         ═══════════════════════════════════════════════════════════ */}
         <section className="px-5 pb-20">
           <div className="mx-auto max-w-6xl">
@@ -588,5 +593,65 @@ export default function HomePage() {
 
       <Footer />
     </div>
+  );
+}
+
+const faqs = [
+  {
+    q: "How did you approach the design system?",
+    a: "Started with brand tokens (colors, typography, spacing) as CSS variables. Built atomic components (Badge, Button, Card) on top, then composed larger patterns. Every color combination was tested for WCAG contrast — lime on asphalt is 12.5:1, lime on white is 1.4:1 and never used.",
+  },
+  {
+    q: "Why Syne + Inter for fonts?",
+    a: "Syne gives geometric personality for headings — it feels urban and modern. Inter is the workhorse for body text: clean, readable, great at small sizes. The pairing balances character with legibility.",
+  },
+  {
+    q: "How does the admin inventory system work?",
+    a: "SQLite backend via better-sqlite3, with a repository pattern abstracting queries. API routes handle CRUD with server-side validation. The admin UI communicates via fetch — no server components in the client bundle. Bikes have a 4-state lifecycle: draft → live → sold → archived.",
+  },
+  {
+    q: "What was the motion design strategy?",
+    a: "ScrollReveal uses IntersectionObserver for scroll-triggered entries. The mega menu uses clip-path for a fluid reveal from the nav button. Text fill interactions use background-clip with hover states. Every animation respects prefers-reduced-motion.",
+  },
+  {
+    q: "How did you handle responsive design?",
+    a: "Mobile-first with Tailwind breakpoints. The homepage story tree collapses from a two-column timeline to a single-column on mobile. The compare table uses horizontal scroll with a hint. The footer wordmark uses clamp() for fluid sizing. Touch targets are 44px minimum.",
+  },
+  {
+    q: "Why SQLite over a hosted database?",
+    a: "Zero config, no external dependencies, perfect for a self-contained project. The repository pattern means swapping to Postgres or Turso later is a one-file change. Data seeds from CSV for reproducibility.",
+  },
+];
+
+function FAQsSection() {
+  return (
+    <section className="px-5 py-20">
+      <div className="mx-auto max-w-3xl">
+        <ScrollReveal>
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 text-center">Process</p>
+          <h2 className="font-heading text-3xl font-bold text-foreground text-center mb-12">
+            Design & development decisions
+          </h2>
+        </ScrollReveal>
+
+        <div className="space-y-4">
+          {faqs.map((faq, i) => (
+            <ScrollReveal key={i} delay={i * 60}>
+              <details className="group rounded-2xl border border-border bg-white">
+                <summary className="flex cursor-pointer items-center justify-between gap-4 p-5 font-heading text-sm font-bold text-foreground list-none">
+                  {faq.q}
+                  <span className="shrink-0 h-6 w-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground transition-transform duration-300 group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
+                  {faq.a}
+                </div>
+              </details>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
