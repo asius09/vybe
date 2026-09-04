@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -23,10 +24,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const bike = getBikeBySlug(id);
-  if (!bike) return { title: "Bike Not Found" };
+  if (!bike) return { title: "Bike Not Found — VYBE" };
   return {
-    title: `${bike.name} — VYBE Bikes`,
-    description: bike.description,
+    title: `${bike.name} — VYBE Used E-Bikes`,
+    description: bike.description || `${bike.year} ${bike.name} in ${bike.condition} condition. ${formatPriceINR(bike.price)}.`,
   };
 }
 
@@ -51,10 +52,11 @@ export default async function BikeDetailPage({
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main id="main-content" className="mx-auto max-w-6xl px-5 py-10">
+      <main className="mx-auto max-w-6xl px-5 py-8">
+        {/* Breadcrumb */}
         <Link
           href="/bikes"
-          className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-foreground mb-6"
         >
           <ArrowLeft className="h-4 w-4" />
           All Bikes
@@ -65,23 +67,26 @@ export default async function BikeDetailPage({
           {/* Image */}
           <div className="space-y-4">
             <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-muted/40 border border-border">
-              <img
+              <Image
                 src={bike.image}
                 alt={bike.name}
-                className="h-full w-full object-cover"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                className="object-cover"
               />
-              <div className="absolute left-4 top-4 flex flex-col gap-2">
+              <div className="absolute left-4 top-4 flex flex-col gap-2 z-10">
                 <Badge variant={conditionVariant[bike.condition] || "outline"}>
                   {bike.condition}
                 </Badge>
                 <Badge variant="dark">{bike.category}</Badge>
               </div>
               {bike.recentlyArrived && (
-                <div className="absolute left-4 top-24">
+                <div className="absolute left-4 top-24 z-10">
                   <span className="rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold text-asphalt">New Arrival</span>
                 </div>
               )}
-              <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 backdrop-blur-sm">
+              <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 backdrop-blur-sm z-10">
                 <span className="text-xs font-bold text-foreground">VYBE Inspected</span>
               </div>
             </div>
@@ -90,8 +95,8 @@ export default async function BikeDetailPage({
             {bike.images.length > 1 && (
               <div className="grid grid-cols-4 gap-3">
                 {bike.images.slice(0, 4).map((img, i) => (
-                  <div key={i} className="aspect-square overflow-hidden rounded-card border border-border bg-muted/40">
-                    <img src={img} alt={`${bike.name} ${i + 1}`} className="h-full w-full object-cover" />
+                  <div key={i} className="relative aspect-square overflow-hidden rounded-card border border-border bg-muted/40">
+                    <Image src={img} alt={`${bike.name} ${i + 1}`} fill sizes="15vw" className="object-cover" />
                   </div>
                 ))}
               </div>
@@ -299,7 +304,7 @@ export default async function BikeDetailPage({
                 <Link key={b.slug} href={`/bikes/${b.slug}`} className="group">
                   <div className="overflow-hidden rounded-card border-2 border-border bg-white shadow-vybe-sm transition-all duration-300 group-hover:border-lime/50 group-hover:shadow-vybe-md">
                     <div className="relative h-40 overflow-hidden bg-muted/40">
-                      <img src={b.image} alt={b.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <Image src={b.image} alt={b.name} fill sizes="33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                     </div>
                     <div className="p-4">
                       <p className="text-xs text-muted-foreground">{b.category}</p>

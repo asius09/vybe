@@ -108,7 +108,7 @@ export function Footer() {
         className="relative w-full overflow-hidden cursor-default select-none leading-none"
         style={{ "--mx": "50%", "--my": "50%", "--spotlight-radius": `${spotlightRadius}px` } as React.CSSProperties}
       >
-        <h2 className="font-heading text-[clamp(80px,22vw,550px)] font-extrabold leading-[0.82] text-warm-white/[0.04] tracking-tighter text-center px-0 pt-4 m-0 select-none">
+        <h2 className="font-heading text-[clamp(80px,22vw,550px)] font-extrabold leading-[0.75] text-warm-white/[0.04] tracking-tighter text-center px-0 p-0 m-0 select-none">
           VYBE
         </h2>
         <div
@@ -118,7 +118,7 @@ export function Footer() {
             WebkitMaskImage: "radial-gradient(circle var(--spotlight-radius) at var(--mx) var(--my), black 0%, transparent 100%)",
           }}
         >
-          <h2 className="font-heading text-[clamp(80px,22vw,550px)] font-extrabold leading-[0.82] text-warm-white tracking-tighter text-center px-0 pt-4 m-0 select-none">
+          <h2 className="font-heading text-[clamp(80px,22vw,550px)] font-extrabold leading-[0.75] text-warm-white tracking-tighter text-center px-0 p-0 m-0 select-none">
             VYBE
           </h2>
         </div>

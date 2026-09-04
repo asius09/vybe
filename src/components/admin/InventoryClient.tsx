@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -324,8 +325,8 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
                   <tr key={bike.id} className="border-b border-border/50 last:border-0 hover:bg-muted/20 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded bg-muted/40">
-                          {bike.image ? <img src={bike.image} alt={bike.name} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-muted" />}
+                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-muted/40">
+                          {bike.image ? <Image src={bike.image} alt={bike.name} fill sizes="40px" className="object-cover" /> : <div className="h-full w-full bg-muted" />}
                         </div>
                         <div>
                           <Link href={`/bikes/${bike.slug}`} className="font-semibold text-foreground hover:underline">{bike.name}</Link>
@@ -363,8 +364,8 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
             return (
               <div key={bike.id} className="rounded-card border border-border bg-white p-4">
                 <div className="flex items-start gap-3">
-                  <div className="h-14 w-14 shrink-0 overflow-hidden rounded bg-muted/40">
-                    {bike.image ? <img src={bike.image} alt={bike.name} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-muted" />}
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded bg-muted/40">
+                    {bike.image ? <Image src={bike.image} alt={bike.name} fill sizes="56px" className="object-cover" /> : <div className="h-full w-full bg-muted" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { services } from "@/data/services";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Check } from "lucide-react";
 
 export const metadata = {
@@ -30,44 +31,33 @@ export default function RepairsPage() {
 
       <main id="main-content">
         {/* ═══ HERO ═══ */}
-        <section className="relative overflow-hidden bg-asphalt">
-          <div className="mx-auto max-w-6xl px-5 py-16 md:py-24">
-            <div className="grid gap-10 md:grid-cols-2 md:items-center">
-              <div className="space-y-6">
-                <Badge variant="lime" className="w-fit">Repair Services</Badge>
-                <h1 className="font-heading text-4xl font-bold text-warm-white md:text-5xl lg:text-6xl">
-                  Expert e-bike
+        <section className="bg-asphalt px-5 py-16 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-12 md:grid-cols-2 md:items-center">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-lime">
+                  Certified Workshop
+                </span>
+                <h1 className="mt-4 font-heading text-4xl font-extrabold text-warm-white md:text-5xl lg:text-6xl">
+                  Expert care for
                   <br />
-                  <span className="text-lime">repairs.</span>
+                  <span className="text-warm-white/50">every e-bike.</span>
                 </h1>
-                <p className="max-w-md text-lg text-warm-white/50 leading-relaxed">
-                  From quick safety checks to full overhauls. Our in-house team
-                  services all e-bike brands and models.
+                <p className="mt-5 text-base text-warm-white/60 max-w-md leading-relaxed">
+                  From minor tune-ups to battery rebuilds and motor diagnostics.
+                  Every brand, every model, done right.
                 </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Button size="lg" className="bg-lime text-asphalt hover:bg-lime-dark font-bold" asChild>
-                    <Link href="/contact">
-                      Book a Service
-                      <ArrowRight className="h-4 w-4 ml-1" />
-                    </Link>
-                  </Button>
-                  <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
-                    <a href="tel:+919315405304">Call Now</a>
-                  </Button>
-                </div>
-
-                {/* Trust stats */}
-                <div className="flex gap-6 pt-4">
+                <div className="mt-8 flex gap-6">
                   <div>
-                    <p className="font-heading text-2xl font-extrabold text-lime">32</p>
-                    <p className="text-[11px] text-warm-white/40">Point check</p>
+                    <p className="font-heading text-2xl font-extrabold text-warm-white">32-pt</p>
+                    <p className="text-[11px] text-warm-white/40">Inspection</p>
                   </div>
                   <div className="w-px bg-warm-white/10" />
                   <div>
-                    <p className="font-heading text-2xl font-extrabold text-warm-white">1-3</p>
-                    <p className="text-[11px] text-warm-white/40">Day turnaround</p>
+                    <p className="font-heading text-2xl font-extrabold text-warm-white">30-day</p>
+                    <p className="text-[11px] text-warm-white/40">Warranty</p>
                   </div>
-                  <div className="wpx bg-warm-white/10" />
+                  <div className="w-px bg-warm-white/10" />
                   <div>
                     <p className="font-heading text-2xl font-extrabold text-warm-white">All</p>
                     <p className="text-[11px] text-warm-white/40">Brands</p>
@@ -78,11 +68,15 @@ export default function RepairsPage() {
               {/* Right — E-bike image */}
               <div className="relative hidden md:flex items-center justify-center">
                 <div className="absolute -inset-20 bg-lime/5 blur-3xl rounded-full" />
-                <img
-                  src="https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=800"
-                  alt=""
-                  className="w-80 h-auto rounded-2xl opacity-30 object-cover"
-                />
+                <div className="relative w-80 h-56 rounded-2xl opacity-30 overflow-hidden">
+                  <Image
+                    src="https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=800"
+                    alt=""
+                    fill
+                    sizes="320px"
+                    className="object-cover"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -188,10 +182,12 @@ export default function RepairsPage() {
           <div className="mx-auto max-w-6xl">
             <div className="overflow-hidden rounded-2xl bg-asphalt p-10 text-center md:p-16 relative">
               <div className="absolute inset-0 opacity-[0.05] pointer-events-none overflow-hidden">
-                <img
+                <Image
                   src="https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=1200"
                   alt=""
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
                 />
               </div>
               <h2 className="font-heading text-3xl font-bold text-warm-white md:text-4xl relative">
