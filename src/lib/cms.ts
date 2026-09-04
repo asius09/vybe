@@ -1,7 +1,7 @@
 // CMS Content Configuration
-// Uses Vercel KV for persistence, falls back to in-memory for local dev
+// Uses Neon Postgres for persistence on Vercel, in-memory for local dev
 
-import { kv } from "@vercel/kv";
+import { neon } from "@neondatabase/serverless";
 
 export interface CMSContent {
   announcement: {
@@ -61,28 +61,29 @@ const defaultContent: CMSContent = {
   },
 };
 
-const KV_KEY = "vybe:cms";
-
-// In-memory fallback for local dev (when KV isn't configured)
 let memStore: CMSContent | null = null;
 
-async function hasKV(): Promise<boolean> {
-  try {
-    await kv.get(KV_KEY);
-    return true;
-  } catch {
-    return false;
-  }
+function getSQL() {
+  const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  if (!url) return null;
+  return neon(url);
 }
 
 export async function getCMSContent(): Promise<CMSContent> {
-  // Try KV first
-  try {
-    const data = await kv.get<CMSContent>(KV_KEY);
-    if (data) return data;
-  } catch {}
-
-  // Fallback to in-memory
+  const sql = getSQL();
+  if (sql) {
+    try {
+      await sql`CREATE TABLE IF NOT EXISTS cms_content (
+        id TEXT PRIMARY KEY DEFAULT 'main',
+        content JSONB NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )`;
+      const rows = await sql`SELECT content FROM cms_content WHERE id = 'main'`;
+      if (rows.length > 0) return rows[0].content as CMSContent;
+    } catch (e) {
+      console.error("CMS read error:", e);
+    }
+  }
   if (memStore) return memStore;
   return defaultContent;
 }
@@ -91,20 +92,42 @@ export async function updateCMSContent(updates: Partial<CMSContent>): Promise<CM
   const current = await getCMSContent();
   const merged = { ...current, ...updates };
 
-  // Try KV
-  try {
-    await kv.set(KV_KEY, merged);
-  } catch {}
+  const sql = getSQL();
+  if (sql) {
+    try {
+      await sql`CREATE TABLE IF NOT EXISTS cms_content (
+        id TEXT PRIMARY KEY DEFAULT 'main',
+        content JSONB NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )`;
+      const payload = JSON.stringify(merged);
+      await sql`INSERT INTO cms_content (id, content, updated_at) VALUES ('main', ${payload}::jsonb, NOW())
+        ON CONFLICT (id) DO UPDATE SET content = ${payload}::jsonb, updated_at = NOW()`;
+    } catch (e) {
+      console.error("CMS write error:", e);
+    }
+  }
 
-  // Always update in-memory fallback
   memStore = merged;
   return merged;
 }
 
 export async function resetCMSContent(): Promise<CMSContent> {
-  try {
-    await kv.set(KV_KEY, defaultContent);
-  } catch {}
+  const sql = getSQL();
+  if (sql) {
+    try {
+      await sql`CREATE TABLE IF NOT EXISTS cms_content (
+        id TEXT PRIMARY KEY DEFAULT 'main',
+        content JSONB NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )`;
+      const payload = JSON.stringify(defaultContent);
+      await sql`INSERT INTO cms_content (id, content, updated_at) VALUES ('main', ${payload}::jsonb, NOW())
+        ON CONFLICT (id) DO UPDATE SET content = ${payload}::jsonb, updated_at = NOW()`;
+    } catch (e) {
+      console.error("CMS reset error:", e);
+    }
+  }
   memStore = defaultContent;
   return defaultContent;
 }
