@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import Link from "next/link";
 
 export function Footer() {
   const maskRef = useRef<HTMLDivElement>(null);
+  const [spotlightRadius, setSpotlightRadius] = useState(200);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     const el = maskRef.current;
@@ -18,13 +19,16 @@ export function Footer() {
     const distFromCenter = Math.sqrt(Math.pow(x - 50, 2) + Math.pow(y - 50, 2));
     const maxDist = 50;
     const shrinkFactor = Math.max(0, 1 - distFromCenter / maxDist);
-    const radius = 60 + shrinkFactor * 160;
-    el.style.setProperty("--spotlight-radius", `${radius}px`);
+    setSpotlightRadius(60 + shrinkFactor * 160);
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    setSpotlightRadius(200);
   }, []);
 
   return (
     <footer className="bg-asphalt text-warm-white">
-      <div className="mx-auto max-w-6xl px-5 py-16">
+      <div className="mx-auto max-w-6xl px-5 pt-16">
         {/* Links Grid */}
         <div className="grid gap-10 md:grid-cols-4">
           <div>
@@ -64,19 +68,20 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ═══ VYBE WORDMARK — Very Bottom ═══ */}
+      {/* ═══ VYBE WORDMARK — Full Width ═══ */}
       <div
         ref={maskRef}
         onPointerMove={handlePointerMove}
-        className="relative w-full overflow-hidden cursor-default select-none bg-asphalt"
+        onPointerLeave={handlePointerLeave}
+        className="relative w-full overflow-hidden cursor-default select-none"
         style={{
           "--mx": "50%",
           "--my": "50%",
-          "--spotlight-radius": "200px",
+          "--spotlight-radius": `${spotlightRadius}px`,
         } as React.CSSProperties}
       >
-        {/* Background text */}
-        <h2 className="font-heading text-[clamp(80px,20vw,280px)] font-extrabold leading-[0.85] text-warm-white/[0.04] tracking-tighter text-center px-4 py-8">
+        {/* Background text — muted */}
+        <h2 className="font-heading text-[clamp(80px,22vw,320px)] font-extrabold leading-[0.85] text-warm-white/[0.04] tracking-tighter text-center px-0 py-4 select-none">
           VYBE
         </h2>
 
@@ -88,14 +93,14 @@ export function Footer() {
             WebkitMaskImage: "radial-gradient(circle var(--spotlight-radius) at var(--mx) var(--my), black 0%, transparent 100%)",
           }}
         >
-          <h2 className="font-heading text-[clamp(80px,20vw,280px)] font-extrabold leading-[0.85] text-warm-white tracking-tighter text-center px-4 py-8">
+          <h2 className="font-heading text-[clamp(80px,22vw,320px)] font-extrabold leading-[0.85] text-warm-white tracking-tighter text-center px-0 py-4 select-none">
             VYBE
           </h2>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="mx-auto max-w-6xl px-5 py-5 border-t border-warm-white/5 bg-asphalt">
+      {/* ═══ Bottom Bar — AFTER VYBE ═══ */}
+      <div className="mx-auto max-w-6xl px-5 py-5 border-t border-warm-white/5">
         <div className="flex flex-col items-center justify-between gap-3 text-[11px] text-warm-white/20 md:flex-row">
           <p>&copy; {new Date().getFullYear()} VYBE Bikes</p>
           <div className="flex items-center gap-3">

@@ -61,58 +61,43 @@ export default function HomePage() {
 
       <main id="main-content">
         {/* ═══════════════════════════════════════════════════════════
-            1. HERO — Bike Only
+            1. HERO — Full-bleed bike image
         ═══════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-asphalt">
-          <div className="mx-auto max-w-6xl px-5 py-20 md:py-32">
-            <div className="grid gap-12 md:grid-cols-2 md:items-center">
-              {/* Left — Minimal copy */}
-              <div className="space-y-8">
-                <h1 className="font-heading text-5xl font-extrabold leading-[1.05] tracking-tight text-warm-white md:text-6xl lg:text-7xl">
-                  Find your
-                  <br />
-                  <span className="text-warm-white/40">next ride.</span>
-                </h1>
-                <p className="max-w-sm text-sm text-warm-white/40 leading-relaxed">
-                  Inspected, serviced, ready to ride.
-                </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Button size="lg" className="bg-warm-white text-asphalt hover:bg-warm-white/90 font-bold" asChild>
-                    <Link href="/bikes">
-                      Browse Bikes
-                      <ArrowRight className="h-4 w-4 ml-1" />
-                    </Link>
-                  </Button>
-                  <Button size="lg" variant="ghost" asChild className="text-warm-white/50 hover:text-warm-white hover:bg-warm-white/10">
-                    <Link href="/sell">Sell Yours</Link>
-                  </Button>
-                </div>
-              </div>
+        <section className="relative overflow-hidden bg-asphalt min-h-[70vh] md:min-h-[80vh] flex items-end">
+          {/* Full-bleed bike image */}
+          {heroBike && (
+            <Link href={`/bikes/${heroBike.slug}`} className="absolute inset-0 group">
+              <img
+                src={heroBike.image}
+                alt={heroBike.name}
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-asphalt/40 to-transparent" />
+            </Link>
+          )}
 
-              {/* Right — Bike image as background context */}
-              {heroBike && (
-                <Link href={`/bikes/${heroBike.slug}`} className="group relative block">
-                  <div className="relative overflow-hidden rounded-2xl">
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img
-                        src={heroBike.image}
-                        alt={heroBike.name}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </div>
-                  </div>
+          {/* Minimal text — bottom left */}
+          <div className="relative z-10 mx-auto max-w-6xl px-5 py-16 md:py-24 w-full">
+            <h1 className="font-heading text-4xl font-extrabold leading-[1.05] tracking-tight text-warm-white md:text-5xl lg:text-6xl">
+              Your next
+              <br />
+              <span className="text-warm-white/40">ride awaits.</span>
+            </h1>
+            <p className="mt-4 text-sm text-warm-white/40">
+              Inspected. Serviced. Ready to ride.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button size="lg" className="bg-warm-white text-asphalt hover:bg-warm-white/90 font-bold" asChild>
+                <Link href="/bikes">
+                  Browse Bikes
+                  <ArrowRight className="h-4 w-4 ml-1" />
                 </Link>
-              )}
+              </Button>
+              <Button size="lg" variant="ghost" asChild className="text-warm-white/50 hover:text-warm-white hover:bg-warm-white/10">
+                <Link href="/sell">Sell Yours</Link>
+              </Button>
             </div>
-          </div>
-
-          {/* E-bike background */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <img
-              src="https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=1200"
-              alt=""
-              className="w-full h-full object-cover opacity-[0.05]"
-            />
           </div>
         </section>
 
