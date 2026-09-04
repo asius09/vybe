@@ -43,6 +43,7 @@ export default async function BikeDetailPage({
   }
 
   const relatedBikes = filterBikes({ category: bike.category })
+    .bikes
     .filter((b) => b.slug !== bike.slug)
     .slice(0, 3);
 

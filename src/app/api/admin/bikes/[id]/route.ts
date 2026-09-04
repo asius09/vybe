@@ -1,22 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import { parse } from "csv-parse/sync";
+import { getBikeById, updateBike, updateBikeStatus, deleteBike } from "@/lib/inventory/repository";
+import { validateUpdateBike } from "@/lib/inventory/validation";
+import type { UpdateBikeInput, InventoryStatus } from "@/lib/inventory/types";
 
-const CSV_PATH = path.join(process.cwd(), "src/data/vybe-bikes-final.csv");
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const numericId = Number(id);
 
-function readCSV(): Record<string, string>[] {
-  const content = fs.readFileSync(CSV_PATH, "utf-8");
-  return parse(content, { columns: true, skip_empty_lines: true }) as Record<string, string>[];
-}
-
-function writeCSV(records: Record<string, string>[]) {
-  const headers = Object.keys(records[0]);
-  const lines = [headers.join(",")];
-  for (const row of records) {
-    lines.push(headers.map((h) => `"${(row[h] || "").replace(/"/g, '""')}"`).join(","));
+  if (isNaN(numericId)) {
+    return NextResponse.json({ error: "Invalid bike ID" }, { status: 400 });
   }
-  fs.writeFileSync(CSV_PATH, lines.join("\n"), "utf-8");
+
+  const bike = getBikeById(numericId);
+  if (!bike) {
+    return NextResponse.json({ error: "Bike not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(bike);
 }
 
 export async function PUT(
@@ -24,29 +27,58 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const body = await request.json();
+  const numericId = Number(id);
 
-  const records = readCSV();
-  const idx = records.findIndex((r) => r.id === id || r.slug === id);
-
-  if (idx === -1) {
-    return NextResponse.json({ error: "Bike not found" }, { status: 404 });
+  if (isNaN(numericId)) {
+    return NextResponse.json({ error: "Invalid bike ID" }, { status: 400 });
   }
 
-  const allowedFields = [
-    "inventoryStatus", "price", "condition", "featured",
-    "recentlyArrived", "status", "description", "warranty",
-  ];
+  try {
+    const body = await request.json();
 
-  for (const field of allowedFields) {
-    if (body[field] !== undefined) {
-      records[idx][field] = String(body[field]);
+    const input: UpdateBikeInput = {};
+    if (body.name !== undefined) input.name = body.name;
+    if (body.category !== undefined) input.category = body.category;
+    if (body.price !== undefined) input.price = Number(body.price);
+    if (body.originalPrice !== undefined) input.originalPrice = Number(body.originalPrice);
+    if (body.year !== undefined) input.year = Number(body.year);
+    if (body.mileage !== undefined) input.mileage = Number(body.mileage);
+    if (body.condition !== undefined) input.condition = body.condition;
+    if (body.batteryCapacityWh !== undefined) input.batteryCapacityWh = Number(body.batteryCapacityWh);
+    if (body.batteryHealthPercent !== undefined) input.batteryHealthPercent = Number(body.batteryHealthPercent);
+    if (body.estimatedRangeKm !== undefined) input.estimatedRangeKm = Number(body.estimatedRangeKm);
+    if (body.motorPowerW !== undefined) input.motorPowerW = Number(body.motorPowerW);
+    if (body.torqueNm !== undefined) input.torqueNm = Number(body.torqueNm);
+    if (body.frameSize !== undefined) input.frameSize = body.frameSize;
+    if (body.frameType !== undefined) input.frameType = body.frameType;
+    if (body.wheelSize !== undefined) input.wheelSize = body.wheelSize;
+    if (body.weightKg !== undefined) input.weightKg = Number(body.weightKg);
+    if (body.brakes !== undefined) input.brakes = body.brakes;
+    if (body.drivetrain !== undefined) input.drivetrain = body.drivetrain;
+    if (body.color !== undefined) input.color = body.color;
+    if (body.inspectionScore !== undefined) input.inspectionScore = body.inspectionScore;
+    if (body.serviceStatus !== undefined) input.serviceStatus = body.serviceStatus;
+    if (body.warranty !== undefined) input.warranty = body.warranty;
+    if (body.bestFor !== undefined) input.bestFor = body.bestFor;
+    if (body.description !== undefined) input.description = body.description;
+    if (body.image !== undefined) input.image = body.image;
+    if (body.images !== undefined) input.images = body.images;
+    if (body.inventoryStatus !== undefined) input.inventoryStatus = body.inventoryStatus;
+
+    const errors = validateUpdateBike(input);
+    if (errors.length > 0) {
+      return NextResponse.json({ error: "Validation failed", errors }, { status: 400 });
     }
+
+    const bike = updateBike(numericId, input);
+    if (!bike) {
+      return NextResponse.json({ error: "Bike not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, bike });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to update bike" }, { status: 500 });
   }
-
-  writeCSV(records);
-
-  return NextResponse.json({ success: true, bike: records[idx] });
 }
 
 export async function DELETE(
@@ -54,15 +86,47 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+  const numericId = Number(id);
 
-  const records = readCSV();
-  const filtered = records.filter((r) => r.id !== id && r.slug !== id);
+  if (isNaN(numericId)) {
+    return NextResponse.json({ error: "Invalid bike ID" }, { status: 400 });
+  }
 
-  if (filtered.length === records.length) {
+  const success = deleteBike(numericId);
+  if (!success) {
     return NextResponse.json({ error: "Bike not found" }, { status: 404 });
   }
 
-  writeCSV(filtered);
-
   return NextResponse.json({ success: true });
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const numericId = Number(id);
+
+  if (isNaN(numericId)) {
+    return NextResponse.json({ error: "Invalid bike ID" }, { status: 400 });
+  }
+
+  try {
+    const body = await request.json();
+    const { status } = body as { status: InventoryStatus };
+
+    const validStatuses: InventoryStatus[] = ["draft", "live", "sold", "archived"];
+    if (!validStatuses.includes(status)) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
+    const bike = updateBikeStatus(numericId, status);
+    if (!bike) {
+      return NextResponse.json({ error: "Bike not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, bike });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to update status" }, { status: 500 });
+  }
 }

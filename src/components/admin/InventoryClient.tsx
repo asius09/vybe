@@ -15,14 +15,12 @@ import {
 
 const statusConfig: Record<InventoryStatus, { label: string; variant: "lime" | "coral" | "purple" | "dark" | "outline"; color: string }> = {
   draft: { label: "Draft", variant: "outline", color: "bg-muted" },
-  inspection: { label: "Inspection", variant: "purple", color: "bg-purple/10" },
-  ready: { label: "Ready", variant: "lime", color: "bg-lime/10" },
   live: { label: "Live", variant: "lime", color: "bg-lime/10" },
-  reserved: { label: "Reserved", variant: "coral", color: "bg-coral/10" },
   sold: { label: "Sold", variant: "dark", color: "bg-foreground/5" },
+  archived: { label: "Archived", variant: "purple", color: "bg-purple/10" },
 };
 
-const statusCycle: InventoryStatus[] = ["draft", "inspection", "ready", "live", "reserved", "sold"];
+const statusCycle: InventoryStatus[] = ["draft", "live", "sold", "archived"];
 const PAGE_SIZE = 10;
 
 const emptyBike = {
@@ -39,7 +37,7 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<InventoryStatus | "all">("all");
   const [page, setPage] = useState(1);
-  const [updating, setUpdating] = useState<string | null>(null);
+  const [updating, setUpdating] = useState<number | null>(null);
 
   // Modals
   const [showAdd, setShowAdd] = useState(false);

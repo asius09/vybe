@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getBikeBySlug, getAllBikes } from "@/data/loader";
+import { getPublicBikeBySlug, getBikeById } from "@/lib/inventory/repository";
 
 export async function GET(
   _request: NextRequest,
@@ -7,10 +7,13 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  // Try slug first, then id
-  let bike = getBikeBySlug(id);
+  // Try slug first (public), then id (admin)
+  let bike = getPublicBikeBySlug(id);
   if (!bike) {
-    bike = getAllBikes().find((b) => b.id === id);
+    const numericId = Number(id);
+    if (!isNaN(numericId)) {
+      bike = getBikeById(numericId);
+    }
   }
 
   if (!bike) {

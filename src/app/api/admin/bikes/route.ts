@@ -1,72 +1,85 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import { parse } from "csv-parse/sync";
+import { getAllBikes, createBike, getBikesByPage, getInventoryCounts, searchBikes } from "@/lib/inventory/repository";
+import { validateCreateBike } from "@/lib/inventory/validation";
+import type { CreateBikeInput, InventoryStatus } from "@/lib/inventory/types";
 
-const CSV_PATH = path.join(process.cwd(), "src/data/vybe-bikes-final.csv");
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
 
-function readCSV(): Record<string, string>[] {
-  const content = fs.readFileSync(CSV_PATH, "utf-8");
-  return parse(content, { columns: true, skip_empty_lines: true }) as Record<string, string>[];
-}
+  const page = searchParams.get("page");
+  const pageSize = searchParams.get("pageSize");
+  const status = searchParams.get("status") as InventoryStatus | null;
+  const search = searchParams.get("search");
 
-function writeCSV(records: Record<string, string>[]) {
-  const headers = Object.keys(records[0]);
-  const lines = [headers.join(",")];
-  for (const row of records) {
-    lines.push(headers.map((h) => `"${(row[h] || "").replace(/"/g, '""')}"`).join(","));
+  if (search) {
+    const bikes = searchBikes(search);
+    return NextResponse.json({ bikes, total: bikes.length });
   }
-  fs.writeFileSync(CSV_PATH, lines.join("\n"), "utf-8");
+
+  if (page) {
+    const result = getBikesByPage(
+      Number(page),
+      Number(pageSize) || 10,
+      status || undefined
+    );
+    return NextResponse.json(result);
+  }
+
+  if (status) {
+    const result = getBikesByPage(1, 100, status);
+    return NextResponse.json({ bikes: result.bikes, total: result.total });
+  }
+
+  const bikes = getAllBikes();
+  const counts = getInventoryCounts();
+  return NextResponse.json({ bikes, total: bikes.length, counts });
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
+  try {
+    const body = await request.json();
 
-  const records = readCSV();
-  const existingIds = records.map((r) => r.id);
-  const newId = String(Math.max(...existingIds.map(Number), 0) + 1);
-  const slug = body.name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+    const input: CreateBikeInput = {
+      slug: "",
+      name: body.name || "",
+      category: body.category || "City",
+      price: Number(body.price) || 0,
+      originalPrice: Number(body.originalPrice) || Number(body.price) || 0,
+      year: Number(body.year) || new Date().getFullYear(),
+      mileage: Number(body.mileage) || 0,
+      condition: body.condition || "Good",
+      batteryCapacityWh: Number(body.batteryCapacityWh) || 0,
+      batteryHealthPercent: Number(body.batteryHealthPercent) || 100,
+      estimatedRangeKm: Number(body.estimatedRangeKm) || 0,
+      motorPowerW: Number(body.motorPowerW) || 0,
+      torqueNm: Number(body.torqueNm) || 0,
+      frameSize: body.frameSize || "Medium",
+      frameType: body.frameType || "Step-through",
+      wheelSize: body.wheelSize || '26"',
+      weightKg: Number(body.weightKg) || 0,
+      brakes: body.brakes || "Disc",
+      drivetrain: body.drivetrain || "Single-speed",
+      color: body.color || "",
+      inspectionScore: body.inspectionScore || "0/32",
+      serviceStatus: body.serviceStatus || "pending",
+      warranty: body.warranty || "30-day",
+      bestFor: body.bestFor || "",
+      description: body.description || "",
+      image: body.image || "",
+      images: body.images || [],
+      inventoryStatus: body.inventoryStatus || "draft",
+      featured: body.featured || false,
+      recentlyArrived: body.recentlyArrived || false,
+    };
 
-  const newRecord: Record<string, string> = {
-    id: newId,
-    slug: body.slug || slug,
-    name: body.name || "",
-    category: body.category || "City",
-    price: String(body.price || 0),
-    originalPrice: String(body.originalPrice || body.price || 0),
-    year: String(body.year || new Date().getFullYear()),
-    mileage: String(body.mileage || 0),
-    condition: body.condition || "Good",
-    batteryCapacityWh: String(body.batteryCapacityWh || 0),
-    batteryHealthPercent: String(body.batteryHealthPercent || 100),
-    estimatedRangeKm: String(body.estimatedRangeKm || 0),
-    motorPowerW: String(body.motorPowerW || 0),
-    torqueNm: String(body.torqueNm || 0),
-    frameSize: body.frameSize || "Medium",
-    frameType: body.frameType || "Step-through",
-    wheelSize: body.wheelSize || '26"',
-    weightKg: String(body.weightKg || 0),
-    brakes: body.brakes || "Disc",
-    drivetrain: body.drivetrain || "Single-speed",
-    color: body.color || "",
-    inspectionScore: body.inspectionScore || "0/32",
-    serviceStatus: body.serviceStatus || "pending",
-    warranty: body.warranty || "30-day",
-    bestFor: body.bestFor || "",
-    status: body.status || "available",
-    inventoryStatus: body.inventoryStatus || "draft",
-    featured: body.featured ? "True" : "False",
-    recentlyArrived: body.recentlyArrived ? "True" : "False",
-    images: JSON.stringify(body.images || []),
-    description: body.description || "",
-    image: body.image || "",
-  };
+    const errors = validateCreateBike(input);
+    if (errors.length > 0) {
+      return NextResponse.json({ error: "Validation failed", errors }, { status: 400 });
+    }
 
-  records.push(newRecord);
-  writeCSV(records);
-
-  return NextResponse.json({ success: true, bike: newRecord }, { status: 201 });
+    const bike = createBike(input);
+    return NextResponse.json({ success: true, bike }, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to create bike" }, { status: 500 });
+  }
 }

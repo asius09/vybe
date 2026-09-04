@@ -13,7 +13,7 @@ export function CompareClient({ allBikes }: { allBikes: VYBEbike[] }) {
   const searchParams = useSearchParams();
   const ids = searchParams.get("ids")?.split(",") || [];
   const compareBikes = ids
-    .map((id) => allBikes.find((b) => b.id === id || b.slug === id))
+    .map((id) => allBikes.find((b) => b.id === Number(id) || b.slug === id))
     .filter(Boolean) as VYBEbike[];
 
   if (compareBikes.length < 2) {
