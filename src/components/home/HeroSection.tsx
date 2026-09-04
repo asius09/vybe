@@ -11,16 +11,12 @@ import {
   CreditCard,
   MapPin,
   RotateCcw,
-  CheckCircle2,
 } from "lucide-react";
 
 export interface HeroSlide {
   id: string;
   name: string;
   category: string;
-  serial: string;
-  year: string;
-  specs: string;
   headline: string;
   subtitle: string;
   price: string;
@@ -35,14 +31,11 @@ const slides: HeroSlide[] = [
     id: "mountain-pro",
     name: "VYBE Venture X-1 Pro",
     category: "Mountain E-Bike",
-    serial: "VYB-016",
-    year: "2024",
-    specs: "750W · 76 km · 98% Batt",
     headline: "RIDE BEYOND BOUNDARIES",
     subtitle: "Pursue the summit, triumph over any route.",
     price: "₹86,000",
     originalPrice: "₹1,24,000",
-    condition: "32-Point Inspected",
+    condition: "98% Battery Health",
     image: "/images/hero/hero-mountain.jpg",
     slug: "vybe-summit-04",
   },
@@ -50,9 +43,6 @@ const slides: HeroSlide[] = [
     id: "commuter-gt",
     name: "VYBE Urban Commuter GT",
     category: "Commuter E-Bike",
-    serial: "VYB-012",
-    year: "2025",
-    specs: "500W · 85 km · Belt Drive",
     headline: "ELEVATE YOUR COMMUTE",
     subtitle: "Effortless urban cruising with 85 km range.",
     price: "₹76,000",
@@ -65,14 +55,11 @@ const slides: HeroSlide[] = [
     id: "gravel-allroad",
     name: "VYBE Rise All-Road Gravel",
     category: "Gravel & All-Road",
-    serial: "VYB-018",
-    year: "2024",
-    specs: "750W · 73 km · Carbon",
     headline: "SPEED MEETS ALL-TERRAIN",
     subtitle: "Ultra-lightweight carbon frame for swift gravel & asphalt.",
     price: "₹87,000",
     originalPrice: "₹1,24,000",
-    condition: "32-Point Inspected",
+    condition: "Like New · Serviced",
     image: "/images/hero/hero-gravel.jpg",
     slug: "vybe-cross-01",
   },
@@ -172,75 +159,34 @@ export function HeroSection() {
           );
         })}
 
-        {/* ─── Authentic Retail Merchandise Hang-Tag (Right Side) ─── */}
-        <div className="absolute top-[12%] sm:top-[15%] md:top-[16%] right-4 sm:right-8 md:right-14 lg:right-20 z-20">
+        {/* ─── Authentic Minimal Retail Hangtag ─── */}
+        <div className="absolute top-[18%] sm:top-[20%] md:top-[22%] right-5 sm:right-10 md:right-16 lg:right-20 z-20">
           <Link
             href={`/bikes/${activeSlide.slug}`}
-            className="block w-44 sm:w-48 md:w-52 rounded-lg bg-warm-white text-asphalt shadow-[0_12px_32px_rgba(0,0,0,0.45)] border border-neutral-300/90 overflow-hidden transition-colors"
+            className="group flex flex-col items-center cursor-pointer"
           >
-            {/* Tag Header with Eyelet & String Loop */}
-            <div className="relative flex items-center justify-between px-3 py-1.5 bg-muted/60 border-b border-neutral-300">
-              {/* Metallic Punch Eyelet */}
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-neutral-700 ring-1 ring-neutral-400 flex items-center justify-center">
-                  <div className="w-1 h-1 rounded-full bg-warm-white" />
-                </div>
-                <span className="text-[9px] font-mono font-bold tracking-wider text-muted-foreground uppercase">
-                  {activeSlide.serial}
+            {/* Tag String / Eyelet */}
+            <div className="w-[1.5px] h-3 bg-white/40 mb-0.5" />
+            <div className="flex items-center gap-2.5 rounded-md bg-[#FBF9F4]/95 text-asphalt px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.18)] border border-neutral-300/80 backdrop-blur-sm transition-all duration-200 hover:border-neutral-400">
+              {/* Eyelet Hole */}
+              <div className="flex items-center justify-center w-2 h-2 rounded-full border border-neutral-400/90 bg-neutral-300/60 shadow-inner shrink-0" />
+              
+              {/* Tag Details */}
+              <div className="flex flex-col leading-tight">
+                <span className="text-[7.5px] font-heading font-extrabold uppercase tracking-widest text-muted-foreground">
+                  PRICE
                 </span>
-              </div>
-              <span className="inline-flex items-center gap-0.5 text-[8px] font-bold uppercase tracking-widest text-lime-deeper bg-lime/20 px-1.5 py-0.5 rounded">
-                <CheckCircle2 className="h-2.5 w-2.5" />
-                CERTIFIED
-              </span>
-            </div>
-
-            {/* Tag Main Body */}
-            <div className="p-3 space-y-1.5 bg-warm-white">
-              {/* Model & Year */}
-              <div className="leading-tight">
-                <p className="font-heading text-xs font-bold text-foreground truncate">
-                  {activeSlide.name}
-                </p>
-                <p className="text-[10px] text-muted-foreground">
-                  {activeSlide.category} · {activeSlide.year}
-                </p>
-              </div>
-
-              {/* Specs pill */}
-              <div className="py-1 px-1.5 rounded bg-muted/40 border border-neutral-200 text-[9px] font-medium text-muted-foreground truncate">
-                {activeSlide.specs}
-              </div>
-
-              {/* Perforated separator */}
-              <div className="border-b border-dashed border-neutral-300 my-1.5" />
-
-              {/* Price Row */}
-              <div className="flex items-baseline justify-between pt-0.5">
-                <div>
-                  <span className="text-[8px] font-bold uppercase tracking-wider text-muted-foreground block">
-                    PRICE
-                  </span>
-                  <span className="font-heading text-base sm:text-lg font-extrabold text-foreground tracking-tight leading-none">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-heading text-sm sm:text-base font-extrabold text-foreground tracking-tight">
                     {activeSlide.price}
                   </span>
+                  {activeSlide.originalPrice && (
+                    <span className="text-[10px] text-muted-foreground line-through font-medium">
+                      {activeSlide.originalPrice}
+                    </span>
+                  )}
                 </div>
-                {activeSlide.originalPrice && (
-                  <span className="text-[10px] text-muted-foreground line-through font-medium">
-                    {activeSlide.originalPrice}
-                  </span>
-                )}
               </div>
-            </div>
-
-            {/* Barcode bottom strip */}
-            <div className="bg-asphalt px-3 py-1 flex items-center justify-between text-warm-white/70">
-              <div className="flex items-center gap-0.5 tracking-tighter text-[7px] font-mono">
-                <span>||| | |||| || ||| | ||</span>
-              </div>
-              <span className="text-[8px] font-bold text-lime tracking-wider uppercase">
-                VYBE VERIFIED
-              </span>
             </div>
           </Link>
         </div>
