@@ -234,7 +234,8 @@ export async function updateBike(id: number, input: UpdateBikeInput): Promise<Bi
   values.push(id);
 
   const query = `UPDATE bikes SET ${setParts.join(", ")} WHERE id = $${values.length} RETURNING *`;
-  const rows = await sql.query(query, values);
+  const result: any = await sql.query(query, values);
+  const rows = result.rows ?? result;
   return rows.length > 0 ? rowToBike(rows[0] as Record<string, unknown>) : null;
 }
 
@@ -344,14 +345,16 @@ export async function filterBikes(opts: {
     const pageSize = opts.pageSize || 12;
     const offset = (page - 1) * pageSize;
 
-    const countResult = await sql.query(`SELECT COUNT(*) as count FROM bikes ${where}`, values);
-    const total = Number((countResult[0] as { count: number }).count);
+    const countResult: any = await sql.query(`SELECT COUNT(*) as count FROM bikes ${where}`, values);
+    const countRows = countResult.rows ?? countResult;
+    const total = Number((countRows[0] as { count: number }).count);
 
     values.push(pageSize, offset);
-    const dataResult = await sql.query(`SELECT * FROM bikes ${where} ORDER BY "updatedAt" DESC LIMIT $${values.length - 1} OFFSET $${values.length}`, values);
+    const dataResult: any = await sql.query(`SELECT * FROM bikes ${where} ORDER BY "updatedAt" DESC LIMIT $${values.length - 1} OFFSET $${values.length}`, values);
+    const dataRows = dataResult.rows ?? dataResult;
 
     return {
-      bikes: (dataResult as Record<string, unknown>[]).map(rowToBike),
+      bikes: (dataRows as Record<string, unknown>[]).map(rowToBike),
       total, page, pageSize, totalPages: Math.ceil(total / pageSize),
     };
   } catch { return { bikes: [], total: 0, page: opts.page || 1, pageSize: opts.pageSize || 12, totalPages: 0 }; }
