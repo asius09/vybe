@@ -1,55 +1,28 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { getFeaturedBikes, getNewArrivals, getCategories, formatPriceINR } from "@/data/loader";
+import { getFeaturedBikes, getNewArrivals, formatPriceINR } from "@/data/loader";
 import type { VYBEbike } from "@/data/loader";
 import { BikeSvg } from "@/components/ui/bike-svg";
-import { Battery, Zap, Shield, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const rideCategories = [
-  {
-    name: "City",
-    description: "Smooth rides through the urban jungle",
-    image: "https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    name: "Commuter",
-    description: "Daily rides, built for reliability",
-    image: "https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    name: "Mountain",
-    description: "Conquer trails and hills with power",
-    image: "https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    name: "Hybrid",
-    description: "Best of both worlds — road and trail",
-    image: "https://images.pexels.com/photos/9138689/pexels-photo-9138689.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    name: "Folding",
-    description: "Compact, portable, city-ready",
-    image: "https://images.pexels.com/photos/16435192/pexels-photo-16435192.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    name: "Cargo",
-    description: "Haul anything — groceries, gear, kids",
-    image: "https://images.pexels.com/photos/31638909/pexels-photo-31638909.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
+  { name: "City", slug: "city", image: "https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=800" },
+  { name: "Commuter", slug: "commuter", image: "https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=800" },
+  { name: "Mountain", slug: "mountain", image: "https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=800" },
+  { name: "Hybrid", slug: "hybrid", image: "https://images.pexels.com/photos/9138689/pexels-photo-9138689.jpeg?auto=compress&cs=tinysrgb&w=800" },
+  { name: "Folding", slug: "folding", image: "https://images.pexels.com/photos/16435192/pexels-photo-16435192.jpeg?auto=compress&cs=tinysrgb&w=800" },
+  { name: "Cargo", slug: "cargo", image: "https://images.pexels.com/photos/31638909/pexels-photo-31638909.jpeg?auto=compress&cs=tinysrgb&w=800" },
 ];
 
-const brands = [
-  "VYBE", "Rad Power", "Trek", "Giant", "Specialized", "Cannondale", "Brompton", "Tern",
-];
+const brands = ["VYBE", "Rad Power", "Trek", "Giant", "Specialized", "Cannondale", "Brompton", "Tern"];
 
 function BikeCardGrid({ bike }: { bike: VYBEbike }) {
   return (
     <Link href={`/bikes/${bike.slug}`} className="group block">
-      <div className="overflow-hidden rounded-card border border-border bg-white transition-all duration-300 group-hover:shadow-vybe-md">
+      <div className="overflow-hidden rounded-card border border-border bg-white transition-all duration-300 group-hover:shadow-vybe-md group-hover:border-border/80">
         <div className="relative aspect-[4/3] overflow-hidden bg-muted/30">
           <img
             src={bike.image}
@@ -58,28 +31,16 @@ function BikeCardGrid({ bike }: { bike: VYBEbike }) {
           />
           {bike.recentlyArrived && (
             <div className="absolute left-3 top-3">
-              <span className="rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold text-asphalt">New</span>
+              <span className="rounded-full bg-foreground px-2 py-0.5 text-[10px] font-bold text-warm-white">New</span>
             </div>
           )}
         </div>
         <div className="p-4">
           <p className="text-[11px] text-muted-foreground">{bike.category}</p>
           <h3 className="font-heading text-base font-bold text-foreground">{bike.name}</h3>
-          <div className="mt-2 flex items-center gap-3 text-[11px] text-muted-foreground">
-            <span>{bike.year}</span>
-            <span>·</span>
-            <span>{bike.mileage.toLocaleString()} km</span>
-            <span>·</span>
-            <span>{bike.batteryHealthPercent}% battery</span>
-          </div>
-          <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-            <div>
-              <p className="font-heading text-lg font-extrabold">{formatPriceINR(bike.price)}</p>
-              <p className="text-[10px] text-muted-foreground line-through">{formatPriceINR(bike.originalPrice)}</p>
-            </div>
-            <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">
-              {bike.condition}
-            </span>
+          <div className="mt-2 flex items-center justify-between">
+            <p className="font-heading text-lg font-extrabold">{formatPriceINR(bike.price)}</p>
+            <span className="text-xs text-muted-foreground">{bike.year} · {bike.mileage.toLocaleString()} km</span>
           </div>
         </div>
       </div>
@@ -101,135 +62,69 @@ export default function HomePage() {
 
       <main id="main-content">
         {/* ═══════════════════════════════════════════════════════════
-            1. HERO — Featured E-Bike Spotlight
+            1. HERO — Bike Only
         ═══════════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-asphalt">
-          <div className="mx-auto max-w-6xl px-5 py-16 md:py-24">
-            <div className="grid gap-10 md:grid-cols-2 md:items-center">
-              {/* Left — Copy + CTAs */}
-              <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 rounded-full bg-warm-white/10 px-3 py-1.5 backdrop-blur-sm">
-                  <span className="h-2 w-2 rounded-full bg-lime animate-pulse" />
-                  <span className="text-xs font-semibold text-warm-white/80">New arrivals weekly</span>
-                </div>
+          <div className="mx-auto max-w-6xl px-5 py-20 md:py-32">
+            <div className="grid gap-12 md:grid-cols-2 md:items-center">
+              {/* Left — Minimal copy */}
+              <div className="space-y-8">
                 <h1 className="font-heading text-5xl font-extrabold leading-[1.05] tracking-tight text-warm-white md:text-6xl lg:text-7xl">
                   Find your
                   <br />
-                  <span className="text-lime">next ride.</span>
+                  <span className="text-warm-white/40">next ride.</span>
                 </h1>
-                <p className="max-w-md text-base text-warm-white/50 leading-relaxed">
-                  Inspected, serviced, and ready to ride. Every VYBE bike passes 32 checks before it reaches you.
+                <p className="max-w-sm text-sm text-warm-white/40 leading-relaxed">
+                  Inspected, serviced, ready to ride.
                 </p>
-
-                {/* Quick stats */}
-                <div className="flex gap-6 pt-2">
-                  <div>
-                    <p className="font-heading text-2xl font-extrabold text-lime">{heroBike?.batteryHealthPercent || 95}%</p>
-                    <p className="text-[11px] text-warm-white/40">Avg battery</p>
-                  </div>
-                  <div className="w-px bg-warm-white/10" />
-                  <div>
-                    <p className="font-heading text-2xl font-extrabold text-warm-white">{heroBike?.estimatedRangeKm || 60} km</p>
-                    <p className="text-[11px] text-warm-white/40">Est. range</p>
-                  </div>
-                  <div className="w-px bg-warm-white/10" />
-                  <div>
-                    <p className="font-heading text-2xl font-extrabold text-warm-white">32</p>
-                    <p className="text-[11px] text-warm-white/40">Point check</p>
-                  </div>
-                </div>
-
-                {/* CTAs */}
-                <div className="flex flex-col gap-3 sm:flex-row pt-2">
-                  <Button size="lg" className="bg-lime text-asphalt hover:bg-lime-dark font-bold" asChild>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button size="lg" className="bg-warm-white text-asphalt hover:bg-warm-white/90 font-bold" asChild>
                     <Link href="/bikes">
-                      Browse All Bikes
+                      Browse Bikes
                       <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>
                   </Button>
-                  <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
-                    <Link href="/sell">
-                      Sell Your Bike
-                      <ArrowRight className="h-4 w-4 ml-1" />
-                    </Link>
+                  <Button size="lg" variant="ghost" asChild className="text-warm-white/50 hover:text-warm-white hover:bg-warm-white/10">
+                    <Link href="/sell">Sell Yours</Link>
                   </Button>
                 </div>
               </div>
 
-              {/* Right — Featured Bike Card */}
+              {/* Right — Bike image only */}
               {heroBike && (
-                <div className="relative">
-                  {/* Glow */}
-                  <div className="absolute -inset-10 bg-lime/5 blur-3xl rounded-full" />
-
-                  <Link href={`/bikes/${heroBike.slug}`} className="group relative block">
-                    <div className="relative overflow-hidden rounded-2xl border border-warm-white/10 bg-warm-white/5 backdrop-blur-md">
-                      {/* Bike image */}
-                      <div className="relative aspect-[4/3] overflow-hidden">
-                        <img
-                          src={heroBike.image}
-                          alt={heroBike.name}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-asphalt/80 via-asphalt/20 to-transparent" />
-
-                        {/* Badges */}
-                        <div className="absolute left-4 top-4 flex gap-2">
-                          <Badge variant="lime">Featured</Badge>
-                          {heroBike.recentlyArrived && <Badge variant="coral">New</Badge>}
-                        </div>
-
-                        {/* Bottom info overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 p-5">
-                          <p className="text-xs text-warm-white/50">{heroBike.category} · {heroBike.year}</p>
-                          <h3 className="font-heading text-xl font-bold text-warm-white">{heroBike.name}</h3>
-                          <div className="mt-2 flex items-center gap-4">
-                            <p className="font-heading text-2xl font-extrabold text-lime">{formatPriceINR(heroBike.price)}</p>
-                            {heroBike.originalPrice > heroBike.price && (
-                              <p className="text-sm text-warm-white/40 line-through">{formatPriceINR(heroBike.originalPrice)}</p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Specs strip */}
-                      <div className="grid grid-cols-3 border-t border-warm-white/10 bg-warm-white/5">
-                        <div className="p-3 text-center border-r border-warm-white/10">
-                          <Battery className="h-4 w-4 mx-auto text-lime mb-1" />
-                          <p className="text-xs font-bold text-warm-white">{heroBike.batteryHealthPercent}%</p>
-                          <p className="text-[10px] text-warm-white/40">Battery</p>
-                        </div>
-                        <div className="p-3 text-center border-r border-warm-white/10">
-                          <Zap className="h-4 w-4 mx-auto text-lime mb-1" />
-                          <p className="text-xs font-bold text-warm-white">{heroBike.motorPowerW}W</p>
-                          <p className="text-[10px] text-warm-white/40">Motor</p>
-                        </div>
-                        <div className="p-3 text-center">
-                          <Shield className="h-4 w-4 mx-auto text-lime mb-1" />
-                          <p className="text-xs font-bold text-warm-white">{heroBike.condition}</p>
-                          <p className="text-[10px] text-warm-white/40">Condition</p>
-                        </div>
-                      </div>
+                <Link href={`/bikes/${heroBike.slug}`} className="group relative block">
+                  <div className="relative overflow-hidden rounded-2xl">
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img
+                        src={heroBike.image}
+                        alt={heroBike.name}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-asphalt/40 to-transparent" />
                     </div>
-                  </Link>
-                </div>
+                    {/* Minimal label */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <p className="font-heading text-lg font-bold text-warm-white">{heroBike.name}</p>
+                      <p className="text-sm text-warm-white/50">{formatPriceINR(heroBike.price)}</p>
+                    </div>
+                  </div>
+                </Link>
               )}
             </div>
           </div>
 
-          {/* SVG Bike decoration at bottom */}
-          <div className="absolute bottom-0 left-0 right-0 opacity-[0.04] pointer-events-none overflow-hidden">
+          {/* Subtle SVG */}
+          <div className="absolute bottom-0 left-0 right-0 opacity-[0.03] pointer-events-none">
             <BikeSvg className="w-full h-auto" color="#F5F3EA" />
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            2. WHAT ARE YOU RIDING FOR? — Story flow with bike images
+            2. WHAT ARE YOU RIDING FOR? — Opens with filter
         ═══════════════════════════════════════════════════════════ */}
         <section className="px-5 py-20">
           <div className="mx-auto max-w-6xl">
             <ScrollReveal>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Discover</p>
               <h2 className="font-heading text-3xl font-bold text-foreground">
                 What are you riding for?
               </h2>
@@ -242,7 +137,7 @@ export default function HomePage() {
               {rideCategories.map((cat, i) => (
                 <ScrollReveal key={cat.name} delay={i * 80}>
                   <Link
-                    href={`/bikes?category=${cat.name.toLowerCase()}`}
+                    href={`/bikes?category=${cat.slug}`}
                     className="group relative block aspect-[4/3] overflow-hidden rounded-card"
                   >
                     <img
@@ -250,10 +145,9 @@ export default function HomePage() {
                       alt={cat.name}
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-asphalt/70 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-asphalt/60 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 p-5">
                       <h3 className="font-heading text-lg font-bold text-warm-white">{cat.name}</h3>
-                      <p className="text-xs text-warm-white/60">{cat.description}</p>
                     </div>
                   </Link>
                 </ScrollReveal>
@@ -263,14 +157,13 @@ export default function HomePage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            3. BRANDS — Logo strip
+            3. BRANDS
         ═══════════════════════════════════════════════════════════ */}
-        <section className="border-y border-border bg-muted/30 py-8">
+        <section className="border-y border-border/50 py-8">
           <div className="mx-auto max-w-6xl px-5">
-            <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6">Brands we carry</p>
-            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
               {brands.map((brand) => (
-                <span key={brand} className="font-heading text-sm font-bold text-muted-foreground/50 hover:text-foreground transition-colors">
+                <span key={brand} className="text-xs font-medium text-muted-foreground/40">
                   {brand}
                 </span>
               ))}
@@ -279,25 +172,21 @@ export default function HomePage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            4. LATEST COLLECTION — Two-row grid
+            4. LATEST ARRIVALS
         ═══════════════════════════════════════════════════════════ */}
         <section className="px-5 py-20">
           <div className="mx-auto max-w-6xl">
             <ScrollReveal>
               <div className="flex items-end justify-between mb-8">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Collection</p>
-                  <h2 className="font-heading text-3xl font-bold text-foreground">
-                    Latest arrivals
-                  </h2>
-                </div>
-                <Link href="/bikes" className="text-sm font-semibold text-foreground hover:text-muted-foreground transition-colors">
+                <h2 className="font-heading text-3xl font-bold text-foreground">
+                  Latest arrivals
+                </h2>
+                <Link href="/bikes" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   View all →
                 </Link>
               </div>
             </ScrollReveal>
 
-            {/* Row 1 */}
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-5">
               {row1.map((bike, i) => (
                 <ScrollReveal key={bike.id} delay={i * 100}>
@@ -306,118 +195,46 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Row 2 */}
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {row2.map((bike, i) => (
-                <ScrollReveal key={bike.id} delay={i * 100}>
-                  <BikeCardGrid bike={bike} />
-                </ScrollReveal>
-              ))}
-            </div>
-
-            <ScrollReveal>
-              <div className="mt-10 text-center">
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/bikes">
-                    Browse All Bikes
-                    <span className="ml-1">→</span>
-                  </Link>
-                </Button>
+            {row2.length > 0 && (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {row2.map((bike, i) => (
+                  <ScrollReveal key={bike.id} delay={i * 100}>
+                    <BikeCardGrid bike={bike} />
+                  </ScrollReveal>
+                ))}
               </div>
-            </ScrollReveal>
+            )}
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            5. WHY BUY USED FROM VYBE — Story flow with tree
+            5. WHY VYBE — Timeline
         ═══════════════════════════════════════════════════════════ */}
         <section className="bg-muted/30 px-5 py-24">
           <div className="mx-auto max-w-4xl">
             <ScrollReveal>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 text-center">Why VYBE</p>
               <h2 className="font-heading text-3xl font-bold text-foreground text-center mb-16">
                 Why buy used from VYBE?
               </h2>
             </ScrollReveal>
 
-            {/* Story tree */}
             <div className="relative">
-              {/* Vertical line — hidden on mobile */}
               <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-1/2" />
 
-              {/* Point 1 — Left on desktop, simple on mobile */}
-              <ScrollReveal direction="left" delay={0}>
-                <div className="relative flex items-start md:items-center mb-12 md:mb-16">
-                  <div className="pl-12 md:w-1/2 md:pr-12 md:text-right">
-                    <p className="font-heading text-xs font-bold text-lime-deeper uppercase tracking-wider mb-1">01</p>
-                    <h3 className="font-heading text-xl font-bold text-foreground">32-Point Inspection</h3>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                      Every bike goes through frame, battery, motor, brake, and electrical checks. We document everything.
-                    </p>
-                  </div>
-                  <div className="absolute left-2 md:left-1/2 md:-translate-x-1/2 w-3 h-3 rounded-full bg-lime border-4 border-background z-10 mt-1 md:mt-0" />
-                  <div className="hidden md:block md:w-1/2" />
-                </div>
-              </ScrollReveal>
-
-              {/* Point 2 — Right on desktop, simple on mobile */}
-              <ScrollReveal direction="right" delay={100}>
-                <div className="relative flex items-start md:items-center mb-12 md:mb-16">
-                  <div className="hidden md:block md:w-1/2" />
-                  <div className="absolute left-2 md:left-1/2 md:-translate-x-1/2 w-3 h-3 rounded-full bg-coral border-4 border-background z-10 mt-1 md:mt-0" />
-                  <div className="pl-12 md:w-1/2 md:pl-12">
-                    <p className="font-heading text-xs font-bold text-coral uppercase tracking-wider mb-1">02</p>
-                    <h3 className="font-heading text-xl font-bold text-foreground">Serviced Before Sale</h3>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                      Worn parts replaced, full tune-up completed, battery calibrated. Ready to ride from day one.
-                    </p>
-                  </div>
-                </div>
-              </ScrollReveal>
-
-              {/* Point 3 — Left on desktop, simple on mobile */}
-              <ScrollReveal direction="left" delay={200}>
-                <div className="relative flex items-start md:items-center">
-                  <div className="pl-12 md:w-1/2 md:pr-12 md:text-right">
-                    <p className="font-heading text-xs font-bold text-purple uppercase tracking-wider mb-1">03</p>
-                    <h3 className="font-heading text-xl font-bold text-foreground">30-Day Support</h3>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                      After purchase, we&apos;re here for 30 days. Free check-up, adjustments, and peace of mind.
-                    </p>
-                  </div>
-                  <div className="absolute left-2 md:left-1/2 md:-translate-x-1/2 w-3 h-3 rounded-full bg-purple border-4 border-background z-10 mt-1 md:mt-0" />
-                  <div className="hidden md:block md:w-1/2" />
-                </div>
-              </ScrollReveal>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════════════
-            6. BENTO — Image collection
-        ═══════════════════════════════════════════════════════════ */}
-        <section className="px-5 py-20">
-          <div className="mx-auto max-w-6xl">
-            <ScrollReveal>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Gallery</p>
-              <h2 className="font-heading text-3xl font-bold text-foreground mb-8">
-                VYBE in action
-              </h2>
-            </ScrollReveal>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                "https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/9138689/pexels-photo-9138689.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/16435192/pexels-photo-16435192.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/31638909/pexels-photo-31638909.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/6900869/pexels-photo-6900869.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/34259660/pexels-photo-34259660.jpeg?auto=compress&cs=tinysrgb&w=800",
-              ].map((img, i) => (
-                <ScrollReveal key={i} delay={i * 60} direction="scale">
-                  <div className="aspect-square overflow-hidden rounded-card">
-                    <img src={img} alt="" className="h-full w-full object-cover hover:scale-105 transition-transform duration-700" />
+                { num: "01", title: "32-Point Inspection", desc: "Frame, battery, motor, brake, and electrical checks. We document everything.", color: "bg-foreground" },
+                { num: "02", title: "Serviced Before Sale", desc: "Worn parts replaced, full tune-up, battery calibrated. Ready to ride.", color: "bg-muted-foreground" },
+                { num: "03", title: "30-Day Support", desc: "Free check-up, adjustments, and peace of mind after purchase.", color: "bg-muted-foreground/50" },
+              ].map((item, i) => (
+                <ScrollReveal key={item.num} delay={i * 100} direction={i % 2 === 0 ? "left" : "right"}>
+                  <div className={`relative flex items-start md:items-center mb-12 md:mb-16 ${i % 2 === 0 ? "" : "md:flex-row-reverse"}`}>
+                    <div className={`pl-12 md:w-1/2 ${i % 2 === 0 ? "md:pr-12 md:text-right" : "md:pl-12"}`}>
+                      <p className="font-heading text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{item.num}</p>
+                      <h3 className="font-heading text-xl font-bold text-foreground">{item.title}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                    </div>
+                    <div className={`absolute left-2 md:left-1/2 md:-translate-x-1/2 w-2.5 h-2.5 rounded-full ${item.color} border-4 border-background z-10 mt-1 md:mt-0`} />
+                    <div className="hidden md:block md:w-1/2" />
                   </div>
                 </ScrollReveal>
               ))}
@@ -426,12 +243,11 @@ export default function HomePage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            7. HOW VYBE CHECKS EVERY BIKE — Impactful process
+            6. PROCESS
         ═══════════════════════════════════════════════════════════ */}
         <section className="bg-asphalt px-5 py-24">
           <div className="mx-auto max-w-6xl">
             <ScrollReveal>
-              <p className="text-xs font-bold uppercase tracking-widest text-warm-white/40 mb-3 text-center">Process</p>
               <h2 className="font-heading text-3xl font-bold text-warm-white text-center mb-16">
                 How VYBE checks every bike
               </h2>
@@ -440,14 +256,14 @@ export default function HomePage() {
               {[
                 { step: "01", title: "Intake", desc: "Bike arrives. We log condition, mileage, and service history." },
                 { step: "02", title: "32-Point Check", desc: "Frame, battery, motor, brakes, tires, electrics — every system tested." },
-                { step: "03", title: "Service & Repair", desc: "Worn parts replaced. Full tune-up. Battery calibrated." },
-                { step: "04", title: "Listed & Ready", desc: "Photos taken. Listing live. Ready for test ride." },
+                { step: "03", title: "Service", desc: "Worn parts replaced. Full tune-up. Battery calibrated." },
+                { step: "04", title: "Listed", desc: "Photos taken. Listing live. Ready for test ride." },
               ].map((item, i) => (
                 <ScrollReveal key={item.step} delay={i * 100}>
                   <div className="text-center">
-                    <p className="font-heading text-5xl font-extrabold text-warm-white/10">{item.step}</p>
+                    <p className="font-heading text-5xl font-extrabold text-warm-white/[0.07]">{item.step}</p>
                     <h3 className="mt-3 font-heading text-lg font-bold text-warm-white">{item.title}</h3>
-                    <p className="mt-2 text-sm text-warm-white/50 leading-relaxed">{item.desc}</p>
+                    <p className="mt-2 text-sm text-warm-white/40 leading-relaxed">{item.desc}</p>
                   </div>
                 </ScrollReveal>
               ))}
@@ -456,12 +272,11 @@ export default function HomePage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            8. ONGOING CARE — Full-width two-card
+            7. ONGOING CARE
         ═══════════════════════════════════════════════════════════ */}
         <section className="px-5 py-20">
           <div className="mx-auto max-w-6xl">
             <ScrollReveal>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">After the sale</p>
               <h2 className="font-heading text-3xl font-bold text-foreground mb-8">
                 Ongoing care
               </h2>
@@ -469,26 +284,24 @@ export default function HomePage() {
             <div className="grid gap-5 md:grid-cols-2">
               <ScrollReveal direction="left">
                 <div className="rounded-card border border-border bg-white p-8">
-                  <p className="font-heading text-xs font-bold text-lime-deeper uppercase tracking-wider mb-2">Included</p>
                   <h3 className="font-heading text-xl font-bold text-foreground">Your first service is on us</h3>
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                    Every VYBE bike comes with a free 30-day check-up. We&apos;ll make sure everything is running perfectly.
+                    Every VYBE bike comes with a free 30-day check-up.
                   </p>
-                  <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-foreground">
-                    <Link href="/repairs">Learn more →</Link>
-                  </div>
+                  <Link href="/repairs" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-foreground hover:text-muted-foreground transition-colors">
+                    Learn more →
+                  </Link>
                 </div>
               </ScrollReveal>
               <ScrollReveal direction="right">
                 <div className="rounded-card border border-border bg-white p-8">
-                  <p className="font-heading text-xs font-bold text-coral uppercase tracking-wider mb-2">Available</p>
                   <h3 className="font-heading text-xl font-bold text-foreground">Keep it running</h3>
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                    Battery checks, brake service, full tune-ups, diagnostics. Our in-house team handles it all.
+                    Battery checks, brake service, full tune-ups, diagnostics.
                   </p>
-                  <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-foreground">
-                    <Link href="/repairs">View services →</Link>
-                  </div>
+                  <Link href="/repairs" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-foreground hover:text-muted-foreground transition-colors">
+                    View services →
+                  </Link>
                 </div>
               </ScrollReveal>
             </div>
@@ -496,73 +309,12 @@ export default function HomePage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            9. REVIEWS — Stacked card carousel
-        ═══════════════════════════════════════════════════════════ */}
-        <section className="bg-muted/30 px-5 py-20">
-          <div className="mx-auto max-w-6xl">
-            <ScrollReveal>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 text-center">Reviews</p>
-              <h2 className="font-heading text-3xl font-bold text-foreground text-center mb-12">
-                Real riders, real reviews
-              </h2>
-            </ScrollReveal>
-            <div className="grid gap-5 md:grid-cols-3">
-              {[
-                {
-                  name: "Rahul S.",
-                  bike: "VYBE Metro 01",
-                  slug: "vybe-metro-01",
-                  stars: 5,
-                  text: "Bought this for my daily commute. Bike was exactly as described, great condition. The team was super helpful throughout.",
-                  image: "https://images.pexels.com/photos/4542985/pexels-photo-4542985.jpeg?auto=compress&cs=tinysrgb&w=400",
-                },
-                {
-                  name: "Priya M.",
-                  bike: "VYBE Trail 01",
-                  slug: "vybe-trail-01",
-                  stars: 5,
-                  text: "Took this out on the trails the same day I picked it up. Battery lasts longer than expected. Incredibly smooth ride.",
-                  image: "https://images.pexels.com/photos/19411352/pexels-photo-19411352.jpeg?auto=compress&cs=tinysrgb&w=400",
-                },
-                {
-                  name: "Amit K.",
-                  bike: "VYBE Carry 01",
-                  slug: "vybe-carry-01",
-                  stars: 5,
-                  text: "Cargo bike for the family. Carries everything we need. Saved a fortune compared to buying new. Highly recommend VYBE.",
-                  image: "https://images.pexels.com/photos/31638909/pexels-photo-31638909.jpeg?auto=compress&cs=tinysrgb&w=400",
-                },
-              ].map((review, i) => (
-                <ScrollReveal key={review.name} delay={i * 100}>
-                  <div className="rounded-card border border-border bg-white p-6 h-full flex flex-col">
-                    <div className="flex gap-1 mb-4">
-                      {Array.from({ length: review.stars }).map((_, j) => (
-                        <span key={j} className="text-yellow-400 text-sm">★</span>
-                      ))}
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed flex-1">
-                      &ldquo;{review.text}&rdquo;
-                    </p>
-                    <div className="mt-5 pt-4 border-t border-border">
-                      <p className="font-heading text-sm font-bold text-foreground">{review.name}</p>
-                      <Link href={`/bikes/${review.slug}`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-                        Purchased: {review.bike} →
-                      </Link>
-                    </div>
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════════════
-            10. FAQs — Design & Process
+            8. FAQs
         ═══════════════════════════════════════════════════════════ */}
         <FAQsSection />
 
         {/* ═══════════════════════════════════════════════════════════
-            11. CTA
+            9. CTA
         ═══════════════════════════════════════════════════════════ */}
         <section className="px-5 pb-20">
           <div className="mx-auto max-w-6xl">
@@ -571,18 +323,12 @@ export default function HomePage() {
                 <h2 className="font-heading text-3xl font-bold text-warm-white md:text-4xl">
                   Ready to find your ride?
                 </h2>
-                <p className="mx-auto mt-4 max-w-md text-warm-white/50">
-                  Browse our full collection of inspected, certified used e-bikes.
-                </p>
-                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                  <Button size="lg" asChild>
+                <div className="mt-8">
+                  <Button size="lg" className="bg-warm-white text-asphalt hover:bg-warm-white/90 font-bold" asChild>
                     <Link href="/bikes">
                       Browse All Bikes
-                      <span className="ml-1">→</span>
+                      <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>
-                  </Button>
-                  <Button size="lg" variant="outline" asChild className="border-warm-white/20 text-warm-white hover:bg-warm-white/10">
-                    <Link href="/contact">Contact Us</Link>
                   </Button>
                 </div>
               </div>
@@ -599,27 +345,23 @@ export default function HomePage() {
 const faqs = [
   {
     q: "How did you approach the design system?",
-    a: "Started with brand tokens (colors, typography, spacing) as CSS variables. Built atomic components (Badge, Button, Card) on top, then composed larger patterns. Every color combination was tested for WCAG contrast — lime on asphalt is 12.5:1, lime on white is 1.4:1 and never used.",
+    a: "Started with brand tokens as CSS variables. Built atomic components on top, then composed larger patterns. Every color combination was tested for WCAG contrast.",
   },
   {
     q: "Why Syne + Inter for fonts?",
-    a: "Syne gives geometric personality for headings — it feels urban and modern. Inter is the workhorse for body text: clean, readable, great at small sizes. The pairing balances character with legibility.",
+    a: "Syne gives geometric personality for headings. Inter is the workhorse for body text — clean, readable, great at small sizes.",
   },
   {
-    q: "How does the admin inventory system work?",
-    a: "SQLite backend via better-sqlite3, with a repository pattern abstracting queries. API routes handle CRUD with server-side validation. The admin UI communicates via fetch — no server components in the client bundle. Bikes have a 4-state lifecycle: draft → live → sold → archived.",
+    q: "How does the admin inventory work?",
+    a: "SQLite backend with a repository pattern. API routes handle CRUD with server-side validation. Bikes have a 4-state lifecycle: draft → live → sold → archived.",
   },
   {
-    q: "What was the motion design strategy?",
-    a: "ScrollReveal uses IntersectionObserver for scroll-triggered entries. The mega menu uses clip-path for a fluid reveal from the nav button. Text fill interactions use background-clip with hover states. Every animation respects prefers-reduced-motion.",
+    q: "What was the motion strategy?",
+    a: "ScrollReveal uses IntersectionObserver. The mega menu uses clip-path for fluid reveal. Every animation respects prefers-reduced-motion.",
   },
   {
-    q: "How did you handle responsive design?",
-    a: "Mobile-first with Tailwind breakpoints. The homepage story tree collapses from a two-column timeline to a single-column on mobile. The compare table uses horizontal scroll with a hint. The footer wordmark uses clamp() for fluid sizing. Touch targets are 44px minimum.",
-  },
-  {
-    q: "Why SQLite over a hosted database?",
-    a: "Zero config, no external dependencies, perfect for a self-contained project. The repository pattern means swapping to Postgres or Turso later is a one-file change. Data seeds from CSV for reproducibility.",
+    q: "Why SQLite?",
+    a: "Zero config, no external dependencies. The repository pattern means swapping to Postgres later is a one-file change.",
   },
 ];
 
@@ -628,23 +370,22 @@ function FAQsSection() {
     <section className="px-5 py-20">
       <div className="mx-auto max-w-3xl">
         <ScrollReveal>
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 text-center">Process</p>
           <h2 className="font-heading text-3xl font-bold text-foreground text-center mb-12">
-            Design & development decisions
+            Design & development
           </h2>
         </ScrollReveal>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {faqs.map((faq, i) => (
             <ScrollReveal key={i} delay={i * 60}>
-              <details className="group rounded-2xl border border-border bg-white">
-                <summary className="flex cursor-pointer items-center justify-between gap-4 p-5 font-heading text-sm font-bold text-foreground list-none">
+              <details className="group rounded-xl border border-border bg-white">
+                <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 font-heading text-sm font-bold text-foreground list-none">
                   {faq.q}
-                  <span className="shrink-0 h-6 w-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground transition-transform duration-300 group-open:rotate-45">
+                  <span className="shrink-0 h-5 w-5 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xs transition-transform duration-300 group-open:rotate-45">
                     +
                   </span>
                 </summary>
-                <div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
+                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
                   {faq.a}
                 </div>
               </details>
