@@ -191,3 +191,62 @@
 .animate-on-scroll.scale.visible {
   transform: scale(1);
 }
+
+/* ─── Text Fill Interaction ─── */
+.text-fill {
+  position: relative;
+  display: inline-block;
+  color: var(--muted-foreground);
+  transition: color 0.3s ease;
+}
+
+.text-fill::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--foreground);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.text-fill:hover::after {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ─── Hero Blur-to-Sharp ─── */
+@keyframes heroReveal {
+  from { filter: blur(20px); opacity: 0; }
+  to { filter: blur(0); opacity: 1; }
+}
+
+.hero-reveal {
+  animation: heroReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── Staggered Children ─── */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-scroll,
+  .hero-reveal,
+  .stagger-children > * {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
