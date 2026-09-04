@@ -51,7 +51,7 @@ export default async function BikeDetailPage({
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="mx-auto max-w-6xl px-5 py-10">
+      <main id="main-content" className="mx-auto max-w-6xl px-5 py-10">
         <Link
           href="/bikes"
           className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"

@@ -72,7 +72,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
             {/* Bikes with Mega Menu */}
             <div
               className="relative"
@@ -181,6 +181,7 @@ export function Header() {
             onClick={() => setMobileOpen(!mobileOpen)}
             className="flex h-10 w-10 items-center justify-center rounded-full text-foreground md:hidden"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -191,7 +192,7 @@ export function Header() {
       {mobileOpen && (
         <div className="border-t border-border bg-background md:hidden">
           <div className="mx-auto max-w-6xl px-5 py-6">
-            <nav className="space-y-1">
+          <nav className="space-y-1" aria-label="Mobile navigation">
               <Link
                 href="/bikes"
                 className={cn(

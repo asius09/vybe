@@ -64,7 +64,7 @@ export function Footer() {
         </div>
 
         {/* Links Grid */}
-        <div className="grid gap-10 md:grid-cols-4">
+        <div className="grid gap-10 md:grid-cols-4" role="contentinfo">
           <div>
             <h4 className="font-heading text-xs font-bold uppercase tracking-widest text-warm-white/30 mb-4">Shop</h4>
             <ul className="space-y-2.5">
