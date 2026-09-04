@@ -58,7 +58,7 @@ function csvRowToBike(row: string[], headers: string[]): CreateBikeInput {
     description: get("description") || "",
     image: get("image") || "",
     images: (() => { try { return JSON.parse(get("images") || "[]"); } catch { return []; } })(),
-    inventoryStatus: (get("inventoryStatus") as CreateBikeInput["inventoryStatus"]) || "draft",
+    inventoryStatus: (get("inventoryStatus") as CreateBikeInput["inventoryStatus"]) || "live",
     featured: get("featured")?.toLowerCase() === "true",
     recentlyArrived: get("recentlyArrived")?.toLowerCase() === "true",
   };

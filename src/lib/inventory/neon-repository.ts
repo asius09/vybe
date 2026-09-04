@@ -42,7 +42,7 @@ async function ensureTable(sql: NeonQueryFunction<false, false>) {
     description TEXT DEFAULT '',
     image TEXT DEFAULT '',
     images TEXT DEFAULT '[]',
-    "inventoryStatus" TEXT NOT NULL DEFAULT 'draft',
+    "inventoryStatus" TEXT NOT NULL DEFAULT 'live',
     featured INTEGER DEFAULT 0,
     "recentlyArrived" INTEGER DEFAULT 0,
     "createdAt" TIMESTAMP DEFAULT NOW(),
@@ -152,7 +152,7 @@ export async function createBike(input: CreateBikeInput): Promise<Bike> {
       ${input.brakes}, ${input.drivetrain}, ${input.color},
       ${input.inspectionScore}, ${input.serviceStatus}, ${input.warranty}, ${input.bestFor},
       ${input.description}, ${input.image}, ${images},
-      ${input.inventoryStatus || "draft"}, ${input.featured ? 1 : 0}, ${input.recentlyArrived ? 1 : 0}, ${now}, ${now})
+      ${input.inventoryStatus || "live"}, ${input.featured ? 1 : 0}, ${input.recentlyArrived ? 1 : 0}, ${now}, ${now})
     RETURNING *
   `;
   return rowToBike(rows[0] as Record<string, unknown>);
@@ -190,7 +190,7 @@ export async function createBikesBulk(inputs: CreateBikeInput[]): Promise<{ bike
           ${input.brakes}, ${input.drivetrain}, ${input.color},
           ${input.inspectionScore}, ${input.serviceStatus}, ${input.warranty}, ${input.bestFor},
           ${input.description}, ${input.image}, ${images},
-          ${input.inventoryStatus || "draft"}, ${input.featured ? 1 : 0}, ${input.recentlyArrived ? 1 : 0}, ${now}, ${now})
+          ${input.inventoryStatus || "live"}, ${input.featured ? 1 : 0}, ${input.recentlyArrived ? 1 : 0}, ${now}, ${now})
         RETURNING *
       `;
       bikes.push(rowToBike(rows[0] as Record<string, unknown>));
