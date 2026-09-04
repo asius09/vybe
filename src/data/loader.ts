@@ -29,12 +29,14 @@ export async function getCategories() {
 
 export async function getFeaturedBikes() {
   const bikes = await getPublicBikes();
-  return bikes.filter((b) => b.featured);
+  const featured = bikes.filter((b) => b.featured);
+  return featured.length > 0 ? featured : bikes.slice(0, 6);
 }
 
 export async function getNewArrivals() {
   const bikes = await getPublicBikes();
-  return bikes.filter((b) => b.recentlyArrived);
+  const recent = bikes.filter((b) => b.recentlyArrived);
+  return recent.length > 0 ? recent : bikes.slice(0, 6);
 }
 
 export {
