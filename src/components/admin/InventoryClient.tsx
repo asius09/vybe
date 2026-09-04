@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatPriceINR, type VYBEbike, type InventoryStatus } from "@/data/types";
 import {
   ArrowLeft, Search, ChevronRight, RefreshCw, Plus, Pencil, Trash2,
-  ChevronLeft, X, Check, FileText,
+  ChevronLeft, X, Check, FileText, Upload, Download,
 } from "lucide-react";
 
 const statusConfig: Record<InventoryStatus, { label: string; variant: "lime" | "coral" | "purple" | "dark" | "outline" }> = {
@@ -90,6 +90,14 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [draftSaved, setDraftSaved] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+
+  // CSV Upload
+  const [showCSV, setShowCSV] = useState(false);
+  const [csvFile, setCSVFile] = useState<File | null>(null);
+  const [csvPreview, setCSVPreview] = useState<string[][]>([]);
+  const [csvUploading, setCSVUploading] = useState(false);
+  const [csvResult, setCSVResult] = useState<{ success: number; failed: number; errors: string[] } | null>(null);
+  const [csvDragging, setCSVDragging] = useState(false);
 
   const saveDraft = useCallback((f: typeof form) => {
     try {
@@ -241,6 +249,69 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
 
   const totalValue = bikes.reduce((sum, b) => sum + b.price, 0);
 
+  const parseCSVPreview = (text: string) => {
+    const lines = text.split("\n").filter((l) => l.trim()).slice(0, 6);
+    return lines.map((line) => {
+      const cells: string[] = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (inQuotes) {
+          if (char === '"') { if (i + 1 < line.length && line[i + 1] === '"') { current += '"'; i++; } else { inQuotes = false; } }
+          else { current += char; }
+        } else {
+          if (char === '"') { inQuotes = true; }
+          else if (char === ",") { cells.push(current.trim()); current = ""; }
+          else { current += char; }
+        }
+      }
+      cells.push(current.trim());
+      return cells;
+    });
+  };
+
+  const handleCSVFile = (file: File) => {
+    setCSVFile(file);
+    setCSVResult(null);
+    file.text().then((text) => setCSVPreview(parseCSVPreview(text)));
+  };
+
+  const handleCSVUpload = async () => {
+    if (!csvFile) return;
+    setCSVUploading(true);
+    setCSVResult(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", csvFile);
+      const res = await fetch("/api/admin/bikes/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.ok) {
+        setCSVResult({ success: data.success, failed: data.failed, errors: data.errors });
+        if (data.bikes) {
+          setBikes((prev) => [...data.bikes.map((b: VYBEbike) => ({ ...b, price: Number(b.price), originalPrice: Number(b.originalPrice) })), ...prev]);
+        }
+      } else {
+        setCSVResult({ success: 0, failed: 0, errors: [data.error || "Upload failed"] });
+      }
+    } catch {
+      setCSVResult({ success: 0, failed: 0, errors: ["Network error. Try again."] });
+    } finally {
+      setCSVUploading(false);
+    }
+  };
+
+  const downloadTemplate = () => {
+    const headers = ["name", "category", "price", "originalPrice", "year", "mileage", "condition", "batteryCapacityWh", "batteryHealthPercent", "estimatedRangeKm", "motorPowerW", "torqueNm", "frameSize", "frameType", "wheelSize", "weightKg", "brakes", "drivetrain", "color", "inspectionScore", "serviceStatus", "warranty", "bestFor", "description", "image", "inventoryStatus"];
+    const example = ["My E-Bike", "City", "45000", "65000", "2024", "3000", "Good", "540", "95", "60", "250", "40", "Medium", "Step-through", "26\"", "22", "Disc", "Single-speed", "Black", "28/32", "completed", "30-day", "Daily commute", "A great city e-bike", "https://...", "draft"];
+    const csv = [headers.join(","), example.join(",")].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "vybe-bike-template.csv"; a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const nextStep = () => { if (validateStep(currentStep)) setCurrentStep((s) => Math.min(s + 1, steps.length - 1)); };
   const prevStep = () => setCurrentStep((s) => Math.max(s - 1, 0));
 
@@ -260,6 +331,8 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
           <div className="flex gap-2">
             <Button variant="outline" size="sm" asChild><Link href="/admin/cms"><FileText className="h-4 w-4" /> CMS</Link></Button>
             <Button variant="outline" size="sm" onClick={() => window.location.reload()}><RefreshCw className="h-4 w-4" /> Refresh</Button>
+            <Button variant="outline" size="sm" onClick={downloadTemplate}><Download className="h-4 w-4" /> Template</Button>
+            <Button variant="outline" size="sm" onClick={() => { setShowCSV(true); setCSVFile(null); setCSVPreview([]); setCSVResult(null); }}><Upload className="h-4 w-4" /> Upload CSV</Button>
             <Button size="sm" onClick={openAdd}><Plus className="h-4 w-4" /> Add Bike</Button>
           </div>
         </div>
@@ -592,6 +665,118 @@ export function InventoryClient({ initialBikes }: { initialBikes: VYBEbike[] }) 
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ CSV UPLOAD MODAL ═══ */}
+      {showCSV && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 overflow-y-auto py-10 px-4">
+          <div className="w-full max-w-2xl rounded-card border border-border bg-white">
+            <div className="flex items-center justify-between border-b border-border px-6 py-4">
+              <div>
+                <h2 className="font-heading text-lg font-bold">Upload CSV</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">Bulk import bikes from a CSV file</p>
+              </div>
+              <button onClick={() => setShowCSV(false)} className="rounded p-1 hover:bg-muted"><X className="h-4 w-4" /></button>
+            </div>
+
+            <div className="px-6 py-6 space-y-4">
+              {/* Drop Zone */}
+              <div
+                className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
+                  csvDragging ? "border-foreground bg-muted/30" : csvFile ? "border-lime-deeper bg-lime/5" : "border-border hover:border-muted-foreground/30"
+                }`}
+                onDragOver={(e) => { e.preventDefault(); setCSVDragging(true); }}
+                onDragLeave={() => setCSVDragging(false)}
+                onDrop={(e) => { e.preventDefault(); setCSVDragging(false); const f = e.dataTransfer.files[0]; if (f) handleCSVFile(f); }}
+              >
+                <input
+                  type="file"
+                  accept=".csv"
+                  className="absolute inset-0 cursor-pointer opacity-0"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCSVFile(f); }}
+                />
+                {csvFile ? (
+                  <div>
+                    <Upload className="h-8 w-8 mx-auto text-lime-deeper mb-2" />
+                    <p className="font-semibold text-foreground">{csvFile.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{(csvFile.size / 1024).toFixed(1)} KB</p>
+                  </div>
+                ) : (
+                  <div>
+                    <Upload className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
+                    <p className="font-semibold text-foreground">Drop CSV here or click to browse</p>
+                    <p className="text-xs text-muted-foreground mt-1">Supports .csv files with bike data</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Preview */}
+              {csvPreview.length > 0 && (
+                <div className="rounded-lg border border-border overflow-hidden">
+                  <div className="bg-muted/30 px-4 py-2 text-xs font-bold text-muted-foreground">
+                    Preview (first {csvPreview.length} rows)
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="border-b border-border bg-muted/20">
+                          {csvPreview[0]?.map((h, i) => (
+                            <th key={i} className="px-3 py-2 text-left font-semibold text-muted-foreground whitespace-nowrap">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {csvPreview.slice(1).map((row, i) => (
+                          <tr key={i} className="border-b border-border/50 last:border-0">
+                            {row.map((cell, j) => (
+                              <td key={j} className="px-3 py-2 text-foreground whitespace-nowrap max-w-[120px] truncate">{cell}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Result */}
+              {csvResult && (
+                <div className={`rounded-lg p-4 ${csvResult.failed === 0 ? "bg-lime/10 border border-lime/30" : "bg-coral/10 border border-coral/30"}`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    {csvResult.failed === 0 ? <Check className="h-4 w-4 text-lime-deeper" /> : <X className="h-4 w-4 text-coral" />}
+                    <p className="font-semibold text-sm">
+                      {csvResult.success} imported{csvResult.failed > 0 ? `, ${csvResult.failed} failed` : ""}
+                    </p>
+                  </div>
+                  {csvResult.errors.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      {csvResult.errors.slice(0, 5).map((err, i) => (
+                        <p key={i} className="text-xs text-coral">{err}</p>
+                      ))}
+                      {csvResult.errors.length > 5 && <p className="text-xs text-muted-foreground">+{csvResult.errors.length - 5} more errors</p>}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Template link */}
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <p>Need a template?</p>
+                <button onClick={downloadTemplate} className="font-semibold text-foreground hover:underline flex items-center gap-1">
+                  <Download className="h-3 w-3" /> Download CSV template
+                </button>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="border-t border-border px-6 py-4 flex items-center justify-between">
+              <Button variant="outline" size="sm" onClick={() => setShowCSV(false)}>Cancel</Button>
+              <Button size="sm" onClick={handleCSVUpload} disabled={!csvFile || csvUploading}>
+                {csvUploading ? "Importing..." : csvResult?.success ? "Import More" : "Import Bikes"}
+              </Button>
             </div>
           </div>
         </div>
