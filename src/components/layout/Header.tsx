@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu, X, ChevronDown, ArrowRight, Phone, Mail } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, Phone, Mail, ShoppingCart } from "lucide-react";
 
 const categories = [
   { name: "City", slug: "city", desc: "Smooth urban rides" },
@@ -110,10 +110,13 @@ export function Header() {
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-2">
             <Button size="sm" variant="outline" asChild>
-              <Link href="/contact">Get Started</Link>
+              <Link href="/contact">Login</Link>
             </Button>
+            <button className="flex h-9 w-9 items-center justify-center rounded-full text-foreground hover:bg-muted/50 transition-colors" aria-label="Shopping cart">
+              <ShoppingCart className="h-4 w-4" />
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -253,6 +256,16 @@ export function Header() {
             ))}
           </nav>
           <div className="mt-4 pt-3 border-t border-border/50 space-y-1.5">
+            <div className="flex gap-2 mb-3">
+              <Button size="sm" variant="outline" className="flex-1" asChild>
+                <Link href="/contact">Login</Link>
+              </Button>
+              <Button size="sm" variant="outline" asChild>
+                <Link href="/contact" className="flex items-center gap-1.5">
+                  <ShoppingCart className="h-3.5 w-3.5" /> Cart
+                </Link>
+              </Button>
+            </div>
             <a href="tel:+919315405304" className="flex items-center gap-2 text-sm text-muted-foreground">
               <Phone className="h-3.5 w-3.5" /> +91 93154 05304
             </a>

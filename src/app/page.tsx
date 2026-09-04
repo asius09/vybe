@@ -61,30 +61,33 @@ export default function HomePage() {
 
       <main id="main-content">
         {/* ═══════════════════════════════════════════════════════════
-            1. HERO — Full-bleed bike image
+            1. HERO — Premium full-bleed
         ═══════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-asphalt min-h-[70vh] md:min-h-[80vh] flex items-end">
+        <section className="relative overflow-hidden bg-asphalt min-h-[85vh] md:min-h-[90vh] flex items-end">
           {/* Full-bleed bike image */}
-          {heroBike && (
-            <Link href={`/bikes/${heroBike.slug}`} className="absolute inset-0 group">
+          <div className="absolute inset-0 hero-reveal">
+            {heroBike && (
               <img
                 src={heroBike.image}
                 alt={heroBike.name}
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/20 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-asphalt/40 to-transparent" />
-            </Link>
-          )}
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-asphalt via-asphalt/50 to-asphalt/20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-asphalt/60 via-transparent to-transparent" />
+          </div>
 
-          {/* Minimal text — bottom left */}
-          <div className="relative z-10 mx-auto max-w-6xl px-5 py-16 md:py-24 w-full">
-            <h1 className="font-heading text-4xl font-extrabold leading-[1.05] tracking-tight text-warm-white md:text-5xl lg:text-6xl">
+          {/* Content — bottom left */}
+          <div className="relative z-10 mx-auto max-w-6xl px-5 py-16 md:py-24 w-full stagger-children">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-warm-white/30 mb-4">
+              Delhi NCR&apos;s trusted used e-bike shop
+            </p>
+            <h1 className="font-heading text-5xl font-extrabold leading-[1.1] tracking-tight text-warm-white md:text-6xl lg:text-7xl">
               Your next
               <br />
-              <span className="text-warm-white/40">ride awaits.</span>
+              <span className="text-warm-white/50">ride awaits.</span>
             </h1>
-            <p className="mt-4 text-sm text-warm-white/40">
+            <p className="mt-5 text-base text-warm-white/45 max-w-md leading-relaxed">
               Inspected. Serviced. Ready to ride.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -98,6 +101,12 @@ export default function HomePage() {
                 <Link href="/sell">Sell Yours</Link>
               </Button>
             </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 opacity-40">
+            <span className="text-[10px] uppercase tracking-widest text-warm-white/50">Scroll</span>
+            <div className="w-px h-8 bg-gradient-to-b from-warm-white/50 to-transparent" />
           </div>
         </section>
 
@@ -139,13 +148,25 @@ export default function HomePage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            3. BRANDS
+            3. BRANDS — Animated showcase
         ═══════════════════════════════════════════════════════════ */}
-        <section className="border-y border-border/50 py-8">
-          <div className="mx-auto max-w-6xl px-5">
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-              {brands.map((brand) => (
-                <span key={brand} className="text-xs font-medium text-muted-foreground/40">
+        <section className="border-y border-border/50 py-10 overflow-hidden">
+          <div className="mx-auto max-w-6xl px-5 mb-6">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 text-center">
+              Brands we carry
+            </p>
+          </div>
+          <div className="relative">
+            {/* Fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            {/* Scrolling row */}
+            <div className="flex gap-12 animate-[marquee_30s_linear_infinite] w-max">
+              {[...brands, ...brands].map((brand, i) => (
+                <span
+                  key={`${brand}-${i}`}
+                  className="font-heading text-xl md:text-2xl font-extrabold text-foreground/10 hover:text-foreground/30 transition-colors duration-500 whitespace-nowrap select-none cursor-default"
+                >
                   {brand}
                 </span>
               ))}
@@ -367,8 +388,10 @@ function FAQsSection() {
                     +
                   </span>
                 </summary>
-                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
-                  {faq.a}
+                <div className="overflow-hidden transition-all duration-300 ease-out group-open:max-h-40 group-open:opacity-100 max-h-0 opacity-0">
+                  <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                    {faq.a}
+                  </div>
                 </div>
               </details>
             </ScrollReveal>
